@@ -8,11 +8,13 @@ import urllib
 from bs4 import BeautifulSoup
 from os import listdir
 from os.path import isfile, join
+from os import walk
 import os
 import tarfile,sys
 import lzma
 import shutil
 import subprocess
+import re
 
 conf_parser = argparse.ArgumentParser(
     # Turn off help, so we print all options in response to -h
@@ -119,7 +121,44 @@ with lzma.open(patch_name) as f, open(patch_name[:-3], 'wb') as fout:
     file_content = f.read()
     fout.write(file_content)
 
-shutil.move(patch_name[:-3],'../linux-patches/'+patch_name[:-3]+'.patch')
+mypath = "../linux-patches/"
+
+f = []
+for (dirpath, dirnames, filenames) in walk(mypath):
+    f.extend(filenames)
+    break
+
+patch_found = 0
+for i in filenames:
+    if new_version in i:
+        print("we already have last patch: "+i)
+        patch_found=1
+
+if patch_found == 0:
+    shutil.move(patch_name[:-3],'../linux-patches/'+patch_name[:-3]+'.patch')
+
+base = []
+extra = []
+experimental = []
+for i in filenames:
+    if (re.match(r'^[012]',i)):
+        base.append(i)
+    if (re.match(r'^[34]',i)):
+        extra.append(i)
+    if (re.match(r'^50',i)):
+        experimental.append(i)
+# remove 0000_README file from the list
+base.pop(1)
+print("base patch" )
+print(sorted(base))
+print("extra patch" )
+print(extra)
+print("experimental patch" )
+print(experimental)
+
+print("removing experimental patch")
+for i in experimental:
+    os.remove(mypath+'/'+i)
 
 cwd = os.getcwd()
 
