@@ -88,7 +88,7 @@ for i in tr_table:
 print(new_version_revision)
 new_version_split = new_version_revision.split('.',2)
 new_version = new_version_split[0] + '.' + new_version_split[1]
-print(new_version)
+print("new version: "+new_version)
 
 
 kernel_tarxz = "linux-" + new_version + ".tar.xz"
@@ -105,21 +105,39 @@ else:
     tar.extractall()
     tar.close()
 
-print(new_version_split)
-revision = new_version_split[2]
+print("new_version_split"+str(new_version_split))
+len_new_version_split = len(new_version_split)
+revision = new_version_split[len_new_version_split-1]
 if ("[EOL]" in revision):
     revision = revision[:-6]
 print(revision)
 old_revision = int(revision)-1
 print(old_revision)
-patch_version = new_version + "." + str(old_revision) + "-"+ revision
+# incremental patch
+incremental_patch_version = new_version + "." + str(old_revision) + "-"+ revision
+incremental_patch_name = "patch-" + incremental_patch_version + ".xz"
+# non incremental patch
+patch_version = new_version + "." + revision
 patch_name = "patch-" + patch_version + ".xz"
-patch_url = "http://cdn.kernel.org/pub/linux/kernel/v4.x/incr/"+ patch_name
-print(patch_url)
-urllib.request.urlretrieve(patch_url, patch_name)
-with lzma.open(patch_name) as f, open(patch_name[:-3], 'wb') as fout:
-    file_content = f.read()
-    fout.write(file_content)
+if int(revision) > 1:
+    print("# is incremental version")
+    print("revision: "+str(revision))
+    patch_url = "http://cdn.kernel.org/pub/linux/kernel/v4.x/incr/"+ incremental_patch_name
+    print(patch_url)
+    urllib.request.urlretrieve(patch_url, incremental_patch_name)
+    with lzma.open(incremental_patch_name) as f, open(incremental_patch_name[:-3], 'wb') as fout:
+        file_content = f.read()
+        fout.write(file_content)
+else:
+    print("# not incremental version")
+    print("revision: "+str(revision))
+    patch_url = "http://cdn.kernel.org/pub/linux/kernel/v4.x/"+ patch_name
+    print(patch_url)
+    urllib.request.urlretrieve(patch_url, patch_name)
+    with lzma.open(patch_name) as f, open(patch_name[:-3], 'wb') as fout:
+        file_content = f.read()
+        fout.write(file_content)
+
 
 mypath = "../linux-patches/"
 
@@ -134,8 +152,14 @@ for i in filenames:
         print("we already have last patch: "+i)
         patch_found=1
 
-if patch_found == 0:
-    shutil.move(patch_name[:-3],'../linux-patches/'+patch_name[:-3]+'.patch')
+if new_version != 1:
+    if patch_found == 0:
+        shutil.move(incremental_patch_name[:-3],'../linux-patches/'+incremental_patch_name[:-3]+'.patch')
+else:
+    if patch_found == 0:
+        shutil.move(patch_name[:-3],'../linux-patches/'+patch_name[:-3]+'.patch')
+
+
 
 base = []
 extra = []
