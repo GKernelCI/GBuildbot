@@ -11,6 +11,7 @@ python:
 
 before_install:
   - pip install --upgrade pip
+  - pip install treq
   - pip install 'buildbot[bundle]'
 
 # Simply tests the configuration setup.
