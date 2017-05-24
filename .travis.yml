@@ -18,6 +18,7 @@ script:
   - mkdir buildbot
   - cd buildbot
   - buildbot create-master master
+  - echo 'test:test' > password
   - rm -f master/master.cfg.sample
   - cp ../master.cfg master/.
   - cd master
