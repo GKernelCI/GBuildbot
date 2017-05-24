@@ -6,19 +6,20 @@
 language: python
 
 python:
-  - "2.6"
   - "2.7"
 # work only with python 2 as now
 
 before_install:
-  - pip install --use-mirrors --upgrade pip
-  - pip install --use-mirrors 'buildbot[bundle]'
+  - pip install --upgrade pip
+  - pip install treq
+  - pip install 'buildbot[bundle]'
 
 # Simply tests the configuration setup.
 script:
   - mkdir buildbot
   - cd buildbot
   - buildbot create-master master
+  - echo 'test:test' > master/password
   - rm -f master/master.cfg.sample
   - cp ../master.cfg master/.
   - cd master
