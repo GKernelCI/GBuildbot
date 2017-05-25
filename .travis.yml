@@ -19,8 +19,8 @@ script:
   - mkdir buildbot
   - cd buildbot
   - buildbot create-master master
-  - echo 'test:test' > master/password
-  - echo 'kernelci:test\nkernelci2:test' > master/workers.cfg
+  - echo "test:test" > master/password
+  - echo "kernelci:test\nkernelci2:test" > master/workers.cfg
   - rm -f master/master.cfg.sample
   - cp ../master.cfg master/.
   - cd master
