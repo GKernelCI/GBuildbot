@@ -20,6 +20,7 @@ script:
   - cd buildbot
   - buildbot create-master master
   - echo 'test:test' > master/password
+  - printf 'kernelci:test\nkernelci2:test' > master/workers.cfg
   - rm -f master/master.cfg.sample
   - cp ../master.cfg master/.
   - cd master
