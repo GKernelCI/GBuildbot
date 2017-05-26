@@ -15,6 +15,8 @@ import lzma
 import shutil
 import subprocess
 import re
+import shelve
+
 
 conf_parser = argparse.ArgumentParser(
     # Turn off help, so we print all options in response to -h
@@ -85,6 +87,10 @@ for i in tr_table:
     new_version_revision = find_new_version(version_number, args.version)
     if (new_version_revision != None):
         break
+conf_var = "shelve"
+d= shelve.open(conf_var)
+d["version"] = new_version_revision
+d.close()
 print(new_version_revision)
 new_version_split = new_version_revision.split('.',2)
 new_version = new_version_split[0] + '.' + new_version_split[1]
@@ -179,10 +185,6 @@ print("extra patch" )
 print(extra)
 print("experimental patch" )
 print(experimental)
-
-print("removing experimental patch")
-for i in experimental:
-    os.remove(mypath+'/'+i)
 
 cwd = os.getcwd()
 
