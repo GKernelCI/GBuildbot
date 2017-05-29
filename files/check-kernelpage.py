@@ -1,22 +1,21 @@
 #!/usr/bin/env python
 from __future__ import print_function
-import sys
-import requests
-from configparser import ConfigParser
+
 import argparse
-import urllib
-from bs4 import BeautifulSoup
-from os import listdir
-from os.path import isfile, join
-from os import walk
-import os
-import tarfile,sys
-import lzma
+import shelve
 import shutil
 import subprocess
-import re
-import shelve
+import sys
+import tarfile
+import urllib
 
+import lzma
+import os
+import re
+import requests
+from bs4 import BeautifulSoup
+from configparser import ConfigParser
+from os import walk
 
 conf_parser = argparse.ArgumentParser(
     # Turn off help, so we print all options in response to -h
