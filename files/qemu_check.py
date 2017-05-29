@@ -7,7 +7,7 @@ import shelve
 
 conf_var = "shelve"
 d= shelve.open(conf_var)
-vmlinuz = d["version"]
+vmlinuz_list = d["version"]
 d.close()
 
 vmimage = '/tmp/gentoo.qcow2'
@@ -40,10 +40,10 @@ ult-20170521.qcow2 -O '+ vmimage , stdout=subprocess.PIPE, shell=True)
 else:
     print("vmimage present: " + vmimage)
 
-work = command('qemu-system-x86_64 -m 128M -kernel /boot/vmlinuz-'+ vmlinuz +' -nographic -serial mon:stdio -hda '+ vmimage +' -append "root=/dev/sda1 console=ttyS0,115200n8 console=tty0"', 60)
-if work:
-    print("worked")
-    sys.exit(0)
-else:
-    print("failed")
-    sys.exit(1)
+for vmlinuz in vmlinuz_list:
+    work = command('qemu-system-x86_64 -m 128M -kernel /boot/vmlinuz-'+ vmlinuz +' -nographic -serial mon:stdio -hda '+ vmimage +' -append "root=/dev/sda1 console=ttyS0,115200n8 console=tty0"', 60)
+    if work:
+        print("worked")
+    else:
+        print("failed")
+        sys.exit(1)
