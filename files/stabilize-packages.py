@@ -8,6 +8,8 @@ print ('Number of arguments:', len(sys.argv), 'arguments.')
 print ('Argument List:', str(sys.argv))
 
 packages = sys.argv[1:]
+# filter manifest files
+packages = [ v for v in packages if not "Manifest" in v ]
 gentoo_repo = '../gentoo/'
 
 def command(cmd):
