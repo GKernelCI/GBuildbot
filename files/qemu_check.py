@@ -40,8 +40,13 @@ ult-20170521.qcow2 -O '+ vmimage , stdout=subprocess.PIPE, shell=True)
 else:
     print("vmimage present: " + vmimage)
 
+if isinstance(vmlinuz_list, str):
+    vmlinuz_list = [vmlinuz_list]
+
 for vmlinuz in vmlinuz_list:
-    work = command('qemu-system-x86_64 -m 128M -kernel /boot/vmlinuz-'+ vmlinuz +' -nographic -serial mon:stdio -hda '+ vmimage +' -append "root=/dev/sda1 console=ttyS0,115200n8 console=tty0"', 60)
+    print(vmlinuz)
+    work = command('qemu-system-x86_64 -m 128M -kernel /boot/vmlinuz-'+ vmlinuz +' -nographic -serial mon:stdio -hda '+ vmimage +' -append "root=/dev/sda1 console=ttyS0,115200n8 console=tty0"', 120)
+    time.sleep(600)
     if work:
         print("worked")
     else:
