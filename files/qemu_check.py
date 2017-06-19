@@ -40,6 +40,8 @@ ult-20170521.qcow2 -O '+ vmimage , stdout=subprocess.PIPE, shell=True)
 else:
     print("vmimage present: " + vmimage)
 
+print(vmlinuz_list)
+
 if isinstance(vmlinuz_list, str):
     vmlinuz_list = [vmlinuz_list]
 
