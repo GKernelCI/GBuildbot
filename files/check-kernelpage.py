@@ -9,13 +9,13 @@ import sys
 import tarfile
 import urllib
 
+from configparser import ConfigParser
 import lzma
 import os
+from os import walk
 import re
 import requests
 from bs4 import BeautifulSoup
-from configparser import ConfigParser
-from os import walk
 
 conf_parser = argparse.ArgumentParser(
     # Turn off help, so we print all options in response to -h
@@ -42,7 +42,7 @@ parser = argparse.ArgumentParser(
     formatter_class=argparse.RawDescriptionHelpFormatter,
 )
 parser.set_defaults(**defaults)
-parser.add_argument("-version","--version", help="version number", required=True)
+parser.add_argument("-version", "--version", help="version number", required=True)
 args = parser.parse_args(remaining_argv)
 
 def eprint(*args, **kwargs):
@@ -71,10 +71,10 @@ def get_version_number(tr_html):
     return tr_html_number
 
 def find_new_version(version_number, argument_version):
-    version = version_number.split('.',2)
+    version = version_number.split('.', 2)
     try:
         version = version[0] + '.' + version[1]
-        if (version == argument_version):
+        if version == argument_version:
             return version_number
         else:
             pass
@@ -82,52 +82,50 @@ def find_new_version(version_number, argument_version):
         pass
 
 for i in tr_table:
-    version_number=get_version_number(i)
+    version_number = get_version_number(i)
     new_version_revision = find_new_version(version_number, args.version)
-    if (new_version_revision != None):
+    if new_version_revision != None:
         break
 conf_var = "shelve"
-d= shelve.open(conf_var)
+d = shelve.open(conf_var)
 d["version"] = new_version_revision
 d.close()
 print(new_version_revision)
-new_version_split = new_version_revision.split('.',2)
+new_version_split = new_version_revision.split('.', 2)
 new_version = new_version_split[0] + '.' + new_version_split[1]
-print("new version: "+new_version)
+print("new version: " + new_version)
 
 
 kernel_tarxz = "linux-" + new_version + ".tar.xz"
-if (os.path.exists(kernel_tarxz)):
-    if (os.path.exists("linux-" + new_version)):
+if os.path.exists(kernel_tarxz):
+    if os.path.exists("linux-" + new_version):
         pass
     else:
-        tar = tarfile.open(kernel_tarxz)
-        tar.extractall()
-        tar.close()
+        with tarfile.open(kernel_tarxz) as tar:
+            tar.extractall()
 else:
     urllib.request.urlretrieve("http://distfiles.gentoo.org/distfiles/" + kernel_tarxz, kernel_tarxz)
-    tar = tarfile.open(kernel_tarxz)
-    tar.extractall()
-    tar.close()
+    with tarfile.open(kernel_tarxz) as tar:
+        tar.extractall()
 
 print("new_version_split"+str(new_version_split))
 len_new_version_split = len(new_version_split)
 revision = new_version_split[len_new_version_split-1]
-if ("[EOL]" in revision):
+if "[EOL]" in revision:
     revision = revision[:-6]
 print(revision)
 old_revision = int(revision)-1
 print(old_revision)
 # incremental patch
-incremental_patch_version = new_version + "." + str(old_revision) + "-"+ revision
+incremental_patch_version = new_version + "." + str(old_revision) + "-" + revision
 incremental_patch_name = "patch-" + incremental_patch_version + ".xz"
 # non incremental patch
 patch_version = new_version + "." + revision
 patch_name = "patch-" + patch_version + ".xz"
 if int(revision) > 1:
     print("# is incremental version")
-    print("revision: "+str(revision))
-    patch_url = "http://cdn.kernel.org/pub/linux/kernel/v4.x/incr/"+ incremental_patch_name
+    print("revision: " + str(revision))
+    patch_url = "http://cdn.kernel.org/pub/linux/kernel/v4.x/incr/" + incremental_patch_name
     print(patch_url)
     urllib.request.urlretrieve(patch_url, incremental_patch_name)
     with lzma.open(incremental_patch_name) as f, open(incremental_patch_name[:-3], 'wb') as fout:
@@ -135,7 +133,7 @@ if int(revision) > 1:
         fout.write(file_content)
 else:
     print("# not incremental version")
-    print("revision: "+str(revision))
+    print("revision: " + str(revision))
     patch_url = "http://cdn.kernel.org/pub/linux/kernel/v4.x/"+ patch_name
     print(patch_url)
     urllib.request.urlretrieve(patch_url, patch_name)
@@ -154,15 +152,15 @@ for (dirpath, dirnames, filenames) in walk(mypath):
 patch_found = 0
 for i in filenames:
     if new_version in i:
-        print("we already have last patch: "+i)
-        patch_found=1
+        print("we already have last patch: " + i)
+        patch_found = 1
 
 if new_version != 1:
     if patch_found == 0:
-        shutil.move(incremental_patch_name[:-3],'../linux-patches/'+incremental_patch_name[:-3]+'.patch')
+        shutil.move(incremental_patch_name[:-3], '../linux-patches/' + incremental_patch_name[:-3] + '.patch')
 else:
     if patch_found == 0:
-        shutil.move(patch_name[:-3],'../linux-patches/'+patch_name[:-3]+'.patch')
+        shutil.move(patch_name[:-3], '../linux-patches/' + patch_name[:-3] + '.patch')
 
 
 
@@ -170,19 +168,19 @@ base = []
 extra = []
 experimental = []
 for i in filenames:
-    if (re.match(r'^[012]',i)):
+    if re.match(r'^[012]', i):
         base.append(i)
-    if (re.match(r'^[34]',i)):
+    if re.match(r'^[34]', i):
         extra.append(i)
-    if (re.match(r'^50',i)):
+    if re.match(r'^50', i):
         experimental.append(i)
 # remove 0000_README file from the list
 base.pop(1)
-print("base patch" )
+print("base patch")
 print(sorted(base))
-print("extra patch" )
+print("extra patch")
 print(extra)
-print("experimental patch" )
+print("experimental patch")
 print(experimental)
 
 cwd = os.getcwd()

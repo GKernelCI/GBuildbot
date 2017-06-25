@@ -6,7 +6,7 @@ import os.path
 import shelve
 
 conf_var = "shelve"
-d= shelve.open(conf_var)
+d = shelve.open(conf_var)
 vmlinuz_list = d["version"]
 d.close()
 
@@ -20,7 +20,7 @@ def command(cmd, timeout_sec):
     try:
         timer.start()
         for line in proc.stdout:
-            a=(line.strip())
+            a = line.strip()
             print(a)
             if 'This is localhost' in str(a):
                 work = True
@@ -33,9 +33,9 @@ def command(cmd, timeout_sec):
 isfile = os.path.isfile(vmimage)
 if not isfile:
     proc2 = subprocess.Popen('wget -N http://gentoo.osuosl.org/experimental/amd64/openstack/gentoo-openstack-amd64-defa\
-ult-20170521.qcow2 -O '+ vmimage , stdout=subprocess.PIPE, shell=True)
+ult-20170521.qcow2 -O '+ vmimage, stdout=subprocess.PIPE, shell=True)
     for line in proc2.stdout:
-        a=(line.strip())
+        a = line.strip()
         print(a)
 else:
     print("vmimage present: " + vmimage)

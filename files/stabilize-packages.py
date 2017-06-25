@@ -4,22 +4,22 @@ import sys
 import subprocess
 import shelve
 
-print ('Number of arguments:', len(sys.argv), 'arguments.')
-print ('Argument List:', str(sys.argv))
+print('Number of arguments:', len(sys.argv), 'arguments.')
+print('Argument List:', str(sys.argv))
 
 packages = sys.argv[1:]
 # filter manifest files
-packages = [ v for v in packages if not "Manifest" in v ]
+packages = [v for v in packages if not "Manifest" in v]
 gentoo_repo = '../gentoo/'
 
 def command(cmd):
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True, universal_newlines=True)
     for line in proc.stdout:
-        a=(line.strip(''))
+        a = line.strip('')
         print(a)
 
 conf_var = "shelve"
-d= shelve.open(conf_var)
+d = shelve.open(conf_var)
 d["version"] = []
 
 for package in packages:
@@ -32,8 +32,8 @@ for package in packages:
     command('echo "'+ebuild_merge+'" > ebuild_merge.sh && chmod +x ebuild_merge.sh')
     command('./ebuild_merge.sh')
     command('./ebuild_manifest.sh')
-    package_version = package.replace("sys-kernel/gentoo-sources/gentoo-sources-","")
-    package_version = package_version.replace(".ebuild","")
+    package_version = package.replace("sys-kernel/gentoo-sources/gentoo-sources-", "")
+    package_version = package_version.replace(".ebuild", "")
     print(package_version)
     d["version"].append(package_version)
 
