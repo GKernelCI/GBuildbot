@@ -22,6 +22,8 @@ conf_var = "shelve"
 d = shelve.open(conf_var)
 d["version"] = []
 
+versions = []
+
 for package in packages:
     ebuild_location = gentoo_repo + package
     ebuild_full = '/usr/bin/ebuild ' + ebuild_location
@@ -35,6 +37,7 @@ for package in packages:
     package_version = package.replace("sys-kernel/gentoo-sources/gentoo-sources-", "")
     package_version = package_version.replace(".ebuild", "")
     print(package_version)
-    d["version"].append(package_version)
+    versions.append(package_version)
 
+d["version"] = versions
 d.close()
