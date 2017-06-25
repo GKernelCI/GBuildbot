@@ -42,13 +42,13 @@ shift "$((OPTIND-1))" # Shift off the options and optional --.
 
 # End of file
 for i in ../linux-patches/*.patch; do 
-	echo ${i}
-	yes ""|patch -p1 --no-backup-if-mismatch -f -N -s -d linux-*/ < $i; 
+	echo "${i}"
+	yes "" | patch -p1 --no-backup-if-mismatch -f -N -s -d linux-*/ < "${i}"; 
 done
-cd linux-*/
-if [ ! -z "$kernel_version" ]; then
+cd linux-*/ || exit 1
+if [ ! -z "${kernel_version}" ]; then
 	echo "searching configuration in ~/kernel-config/config-${kernel_version}"
-	if [ ! -f ~/kernel-config/config-${kernel_version} ]; then
+	if [ ! -f ~/kernel-config/config-"${kernel_version}" ]; then
 		echo "File not found!"
 		echo "searching configuration in /proc/config.gz"
 		if [ ! -f ~/kernel-config ]; then
@@ -60,8 +60,8 @@ if [ ! -z "$kernel_version" ]; then
 		fi
 	else
 		echo "Using ~/kernel-config/config-${kernel_version}"
-		cp ~/kernel-config/config-${kernel_version} .config
+		cp ~/kernel-config/config-"${kernel_version}" .config
 	fi
 fi
-yes ""|make oldconfig
-cat Makefile |head
+yes "" | make oldconfig
+head Makefile
