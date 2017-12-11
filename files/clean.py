@@ -10,14 +10,14 @@ def command(cmd):
         a = line.strip('')
         print(a)
 
-conf_var = "shelve"
+conf_var = "files/shelve"
 d = shelve.open(conf_var)
 packages = d["version"]
 d.close()
 
 # filter manifest files
 packages = [v for v in packages if not "Manifest" in v]
-gentoo_repo = '../gentoo/'
+gentoo_repo = '/gentoo/'
 
 for package in packages:
     ebuild_location = gentoo_repo + package
