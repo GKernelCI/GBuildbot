@@ -35,10 +35,7 @@ for package in packages:
     command('echo "'+ebuild_merge+'" > ebuild_merge.sh && chmod +x ebuild_merge.sh')
     command('./ebuild_merge.sh')
     command('./ebuild_manifest.sh')
-    package_version = package.replace("sys-kernel/gentoo-sources/gentoo-sources-", "")
-    package_version = package_version.replace(".ebuild", "")
-    print(package_version)
-    versions.append(package_version)
+    versions.append(package)
 
 d["version"] = versions
 d.close()
