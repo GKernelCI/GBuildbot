@@ -32,7 +32,7 @@ if args.conf_file:
     config.read([args.conf_file])
     defaults = dict(config.items("Defaults"))
 
-# Don't surpress add_help here so it will handle -h
+# Don't suppress add_help here so it will handle -h
 parser = argparse.ArgumentParser(
     # Inherit options from config_parser
     parents=[conf_parser],
