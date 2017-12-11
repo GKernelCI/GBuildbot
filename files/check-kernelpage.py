@@ -32,7 +32,7 @@ if args.conf_file:
     config.read([args.conf_file])
     defaults = dict(config.items("Defaults"))
 
-# Don't surpress add_help here so it will handle -h
+# Don't suppress add_help here so it will handle -h
 parser = argparse.ArgumentParser(
     # Inherit options from config_parser
     parents=[conf_parser],
@@ -45,20 +45,22 @@ parser.set_defaults(**defaults)
 parser.add_argument("-version", "--version", help="version number", required=True)
 args = parser.parse_args(remaining_argv)
 
+
 def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
 r = requests.get('https://www.kernel.org/')
 
-#print r.status_code
+# print r.status_code
 soup = BeautifulSoup(r.content, "lxml")
-#print soup
+# print soup
 tables = soup.findChildren('table')
 
 # This will get the first (and only) table. Your page may have more.
 my_table = tables[2]
-#print my_table
+# print my_table
 tr_table = my_table.findChildren('tr')
+
 
 def get_version_number(tr_html):
     # get list of td
@@ -69,6 +71,7 @@ def get_version_number(tr_html):
     for node in tr_html.findAll('strong'):
         tr_html_number = ''.join(node.findAll(text=True))
     return tr_html_number
+
 
 def find_new_version(version_number, argument_version):
     version = version_number.split('.', 2)
@@ -84,7 +87,7 @@ def find_new_version(version_number, argument_version):
 for i in tr_table:
     version_number = get_version_number(i)
     new_version_revision = find_new_version(version_number, args.version)
-    if new_version_revision != None:
+    if new_version_revision is not None:
         break
 conf_var = "shelve"
 d = shelve.open(conf_var)

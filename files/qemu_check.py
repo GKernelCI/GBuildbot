@@ -12,6 +12,7 @@ d.close()
 
 vmimage = '/tmp/gentoo.qcow2'
 
+
 def command(cmd, timeout_sec):
     work = False
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)

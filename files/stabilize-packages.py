@@ -12,6 +12,7 @@ packages = sys.argv[1:]
 packages = [v for v in packages if not "Manifest" in v]
 gentoo_repo = '../gentoo/'
 
+
 def command(cmd):
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True, universal_newlines=True)
     for line in proc.stdout:
