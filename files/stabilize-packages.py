@@ -27,7 +27,7 @@ versions = []
 
 for package in packages:
     ebuild_location = gentoo_repo + package
-    ebuild_full = '/usr/bin/ebuild ' + ebuild_location
+    ebuild_full = 'ROOT=kernel_sources/ /usr/bin/ebuild ' + ebuild_location
     ebuild_manifest = ebuild_full + ' manifest'
     ebuild_merge = ebuild_full + ' merge '
 

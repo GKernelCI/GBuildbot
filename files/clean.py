@@ -21,7 +21,7 @@ gentoo_repo = 'gentoo/'
 
 for package in packages:
     ebuild_location = gentoo_repo + package
-    ebuild_full = '/usr/bin/ebuild ' + ebuild_location
+    ebuild_full = "ROOT=kernel_sources/ /usr/bin/ebuild " + ebuild_location
     ebuild_unmerge = ebuild_full + ' unmerge '
     command('echo "'+ebuild_unmerge+'" > ebuild_unmerge.sh && chmod +x ebuild_unmerge.sh')
     command('./ebuild_unmerge.sh')
