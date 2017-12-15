@@ -10,6 +10,7 @@ d = shelve.open(conf_var)
 vmlinuz_list = d["version"]
 d.close()
 
+qemu_timeout = 120
 vmimage = '/tmp/gentoo.qcow2'
 BaseURI = 'http://gentoo.osuosl.org/experimental/amd64/openstack/'\
           'gentoo-openstack-amd64-default-'
@@ -61,7 +62,7 @@ for vmlinuz in vmlinuz_list:
     cmd_qemu = 'qemu-system-x86_64 -m 128M -kernel /boot/vmlinuz-' + \
         vmlinuz + ' -nographic -serial mon:stdio -hda ' + vmimage + \
         ' -append "root=/dev/sda1 console=ttyS0,115200n8 console=tty0"'
-    work = command(cmd_qemu, 120)
+    work = command(cmd_qemu, qemu_timeout)
     if work:
         print("worked")
     else:
