@@ -52,7 +52,10 @@ if isinstance(vmlinuz_list, str):
 
 for vmlinuz in vmlinuz_list:
     print(vmlinuz)
-    work = command('qemu-system-x86_64 -m 128M -kernel /boot/vmlinuz-'+ vmlinuz +' -nographic -serial mon:stdio -hda '+ vmimage +' -append "root=/dev/sda1 console=ttyS0,115200n8 console=tty0"', 120)
+    cmd_qemu = 'qemu-system-x86_64 -m 128M -kernel /boot/vmlinuz-' + \
+        vmlinuz + ' -nographic -serial mon:stdio -hda ' + vmimage + \
+        ' -append "root=/dev/sda1 console=ttyS0,115200n8 console=tty0"'
+    work = command(cmd_qemu, 120)
     if work:
         print("worked")
     else:
