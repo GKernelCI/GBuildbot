@@ -122,8 +122,8 @@ print(revision)
 old_revision = int(revision)-1
 print(old_revision)
 # incremental patch
-incremental_patch_version = new_version + "." + str(old_revision) + "-" +\
-                            revision
+incremental_patch_version = new_version + "." + str(old_revision) + \
+    "-" + revision
 incremental_patch_name = "patch-" + incremental_patch_version + ".xz"
 # non incremental patch
 patch_version = new_version + "." + revision

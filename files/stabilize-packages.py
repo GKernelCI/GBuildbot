@@ -9,12 +9,13 @@ print('Argument List:', str(sys.argv))
 
 packages = sys.argv[1:]
 # filter manifest files
-packages = [v for v in packages if not "Manifest" in v]
+packages = [v for v in packages if "Manifest" not in v]
 gentoo_repo = '../gentoo/'
 
 
 def command(cmd):
-    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True, universal_newlines=True)
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True,
+                            universal_newlines=True)
     for line in proc.stdout:
         a = line.strip('')
         print(a)
@@ -31,8 +32,12 @@ for package in packages:
     ebuild_manifest = ebuild_full + ' manifest'
     ebuild_merge = ebuild_full + ' merge '
 
-    command('echo "'+ebuild_manifest+'" > ebuild_manifest.sh && chmod +x ebuild_manifest.sh')
-    command('echo "'+ebuild_merge+'" > ebuild_merge.sh && chmod +x ebuild_merge.sh')
+    cmd_emg_manifest = 'echo "' + ebuild_manifest + \
+        '" > ebuild_manifest.sh && chmod +x ebuild_manifest.sh'
+    command(cmd_emg_manifest)
+    cmd_emg_merge = 'echo "' + ebuild_merge + \
+        '" > ebuild_merge.sh && chmod +x ebuild_merge.sh'
+    command(cmd_emg_merge)
     command('./ebuild_merge.sh')
     command('./ebuild_manifest.sh')
     versions.append(package)
