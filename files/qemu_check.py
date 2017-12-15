@@ -11,6 +11,9 @@ vmlinuz_list = d["version"]
 d.close()
 
 vmimage = '/tmp/gentoo.qcow2'
+BaseURI = 'http://gentoo.osuosl.org/experimental/amd64/openstack/'\
+          'gentoo-openstack-amd64-default-'
+SnapshotDate = '20171124'
 
 
 def command(cmd, timeout_sec):
@@ -33,8 +36,9 @@ def command(cmd, timeout_sec):
 
 isfile = os.path.isfile(vmimage)
 if not isfile:
-    proc2 = subprocess.Popen('wget -N http://gentoo.osuosl.org/experimental/amd64/openstack/gentoo-openstack-amd64-defa\
-ult-20170521.qcow2 -O '+ vmimage, stdout=subprocess.PIPE, shell=True)
+    ImageURI = BaseURI + SnapshotDate + '.qcow2'
+    cmd_wget = 'wget -N ' + ImageURI + ' -O ' + vmimage
+    proc2 = subprocess.Popen(cmd_wget, stdout=subprocess.PIPE, shell=True)
     for line in proc2.stdout:
         a = line.strip()
         print(a)
