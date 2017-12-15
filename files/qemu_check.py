@@ -16,11 +16,17 @@ BaseURI = 'http://gentoo.osuosl.org/experimental/amd64/openstack/'\
 SnapshotDate = '20171124'
 
 
+def kill_proc(proc, timeout):
+    timeout["value"] = True
+    proc.kill()
+
+
 def command(cmd, timeout_sec):
     work = False
+    timeout = {"value": False}
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
-    kill_proc = lambda p: p.kill()
-    timer = Timer(timeout_sec, kill_proc, [proc])
+    #  kill_proc = lambda p: p.kill()
+    timer = Timer(timeout_sec, kill_proc, [proc, timeout])
     try:
         timer.start()
         for line in proc.stdout:
@@ -31,7 +37,7 @@ def command(cmd, timeout_sec):
                 break
     finally:
         timer.cancel()
-    proc.kill()
+    #  proc.kill()
     return work
 
 isfile = os.path.isfile(vmimage)
