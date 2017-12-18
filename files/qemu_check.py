@@ -14,7 +14,7 @@ qemu_timeout = 120
 vmimage = '/tmp/gentoo.qcow2'
 BaseURI = 'http://gentoo.osuosl.org/experimental/amd64/openstack/'\
           'gentoo-openstack-amd64-default-'
-SnapshotDate = '20171124'
+SnapshotDate = 'latest'
 
 
 def kill_proc(proc, timeout):
