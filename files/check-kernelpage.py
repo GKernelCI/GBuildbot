@@ -10,11 +10,24 @@ import tarfile
 
 if sys.version_info.major == 3:
     from urllib.request import urlretrieve
+    import lzma
+
+    def extract(filename):
+        with tarfile.open(filename) as tar:
+            tar.extractall()
+
 else:
     from urllib import urlretrieve
+    from backports import lzma
+
+    def extract(filename):
+        with lzma.open(filename) as f, open(filename[:-3], 'wb') as fout:
+            file_content = f.read()
+            fout.write(file_content)
+        with tarfile.open(filename[:-3]) as tar:
+            tar.extractall()
 
 from configparser import ConfigParser
-import lzma
 import os
 from os import walk
 import re
@@ -109,13 +122,11 @@ if os.path.exists(kernel_tarxz):
     if os.path.exists("linux-" + new_version):
         pass
     else:
-        with tarfile.open(kernel_tarxz) as tar:
-            tar.extractall()
+        extract(kernel_tarxz)
 else:
     urlretrieve("http://distfiles.gentoo.org/distfiles/" +
-                               kernel_tarxz, kernel_tarxz)
-    with tarfile.open(kernel_tarxz) as tar:
-        tar.extractall()
+                kernel_tarxz, kernel_tarxz)
+    extract(kernel_tarxz)
 
 print("new_version_split"+str(new_version_split))
 len_new_version_split = len(new_version_split)
