@@ -7,7 +7,11 @@ import shutil
 import subprocess
 import sys
 import tarfile
-import urllib
+
+if sys.version_info.major == 3:
+    from urllib.request import urlretrieve
+else:
+    from urllib import urlretrieve
 
 from configparser import ConfigParser
 import lzma
@@ -108,7 +112,7 @@ if os.path.exists(kernel_tarxz):
         with tarfile.open(kernel_tarxz) as tar:
             tar.extractall()
 else:
-    urllib.request.urlretrieve("http://distfiles.gentoo.org/distfiles/" +
+    urlretrieve("http://distfiles.gentoo.org/distfiles/" +
                                kernel_tarxz, kernel_tarxz)
     with tarfile.open(kernel_tarxz) as tar:
         tar.extractall()
@@ -134,7 +138,7 @@ if int(revision) > 1:
     patch_url = "http://cdn.kernel.org/pub/linux/kernel/v4.x/incr/" +\
                 incremental_patch_name
     print(patch_url)
-    urllib.request.urlretrieve(patch_url, incremental_patch_name)
+    urlretrieve(patch_url, incremental_patch_name)
     with lzma.open(incremental_patch_name) as f, open(
             incremental_patch_name[:-3], 'wb') as fout:
         file_content = f.read()
@@ -144,7 +148,7 @@ else:
     print("revision: " + str(revision))
     patch_url = "http://cdn.kernel.org/pub/linux/kernel/v4.x/" + patch_name
     print(patch_url)
-    urllib.request.urlretrieve(patch_url, patch_name)
+    urlretrieve(patch_url, patch_name)
     with lzma.open(patch_name) as f, open(patch_name[:-3], 'wb') as fout:
         file_content = f.read()
         fout.write(file_content)
