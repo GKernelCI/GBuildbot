@@ -53,8 +53,9 @@ if isinstance(vmlinuz_list, str):
 
 for vmlinuz in vmlinuz_list:
     print(vmlinuz)
-    cmd_qemu = 'qemu-system-x86_64 -m 128M -kernel /boot/vmlinuz-' + \
-        vmlinuz + ' -nographic -serial mon:stdio -hda ' + vmimage + \
+    cmd_qemu = 'qemu-system-x86_64 -m 128M -kernel ' \
+        'linux-*/arch/x86/boot/bzImage' \
+        ' -nographic -serial mon:stdio -hda ' + vmimage + \
         ' -append "root=/dev/sda1 console=ttyS0,115200n8 console=tty0"'
     work = command(cmd_qemu, qemu_timeout)
     if work:
