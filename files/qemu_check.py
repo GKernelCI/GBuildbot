@@ -10,7 +10,7 @@ d = shelve.open(conf_var)
 vmlinuz_list = d["version"]
 d.close()
 
-qemu_timeout = 120
+qemu_timeout = 360
 vmimage = '/tmp/gentoo.qcow2'
 BaseURI = 'http://gentoo.osuosl.org/experimental/amd64/openstack/'\
           'gentoo-openstack-amd64-default-'
