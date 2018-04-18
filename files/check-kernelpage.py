@@ -7,6 +7,7 @@ import shutil
 import subprocess
 import sys
 import tarfile
+import json
 
 if sys.version_info.major == 3:
     from urllib.request import urlretrieve
@@ -29,10 +30,10 @@ else:
 
 from configparser import ConfigParser
 import os
+import stat
 from os import walk
 import re
 import requests
-from bs4 import BeautifulSoup
 
 conf_parser = argparse.ArgumentParser(
     # Turn off help, so we print all options in response to -h
@@ -67,29 +68,6 @@ args = parser.parse_args(remaining_argv)
 def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
-r = requests.get('https://www.kernel.org/')
-
-# print r.status_code
-soup = BeautifulSoup(r.content, "lxml")
-# print soup
-tables = soup.findChildren('table')
-
-# This will get the first (and only) table. Your page may have more.
-my_table = tables[2]
-# print my_table
-tr_table = my_table.findChildren('tr')
-
-
-def get_version_number(tr_html):
-    # get list of td
-    tr_html = tr_html.findChildren('td')
-    # td 1 contains the kernel number
-    tr_html = tr_html[1]
-    # get the kernel number inside strong tag
-    for node in tr_html.findAll('strong'):
-        tr_html_number = ''.join(node.findAll(text=True))
-    return tr_html_number
-
 
 def find_new_version(version_number, argument_version):
     version = version_number.split('.', 2)
@@ -102,11 +80,25 @@ def find_new_version(version_number, argument_version):
     except:
         pass
 
-for i in tr_table:
-    version_number = get_version_number(i)
+
+def chmod_ixusr(filename):
+    print("chmod +x %s" % (filename))
+    try:
+        os.chmod(filename, stat.S_IXUSR)
+    except OSError as err:
+        print("%s: %s" % (err.filename, err.strerror))
+
+
+urlretrieve("https://www.kernel.org/releases.json", "releases.json")
+config = json.load(open("releases.json", 'r'))
+all_releases = config['releases']
+
+for release in all_releases:
+    version_number = release['version']
     new_version_revision = find_new_version(version_number, args.version)
     if new_version_revision is not None:
         break
+
 conf_var = "shelve"
 d = shelve.open(conf_var)
 d["version"] = new_version_revision
@@ -128,41 +120,16 @@ else:
                 kernel_tarxz, kernel_tarxz)
     extract(kernel_tarxz)
 
-print("new_version_split"+str(new_version_split))
-len_new_version_split = len(new_version_split)
-revision = new_version_split[len_new_version_split-1]
-if "[EOL]" in revision:
-    revision = revision[:-6]
-print(revision)
-old_revision = int(revision)-1
-print(old_revision)
-# incremental patch
-incremental_patch_version = new_version + "." + str(old_revision) + \
-    "-" + revision
-incremental_patch_name = "patch-" + incremental_patch_version + ".xz"
-# non incremental patch
-patch_version = new_version + "." + revision
-patch_name = "patch-" + patch_version + ".xz"
-if int(revision) > 1:
-    print("# is incremental version")
-    print("revision: " + str(revision))
-    patch_url = "http://cdn.kernel.org/pub/linux/kernel/v4.x/incr/" +\
-                incremental_patch_name
-    print(patch_url)
-    urlretrieve(patch_url, incremental_patch_name)
-    with lzma.open(incremental_patch_name) as f, open(
-            incremental_patch_name[:-3], 'wb') as fout:
-        file_content = f.read()
-        fout.write(file_content)
-else:
-    print("# not incremental version")
-    print("revision: " + str(revision))
-    patch_url = "http://cdn.kernel.org/pub/linux/kernel/v4.x/" + patch_name
-    print(patch_url)
-    urlretrieve(patch_url, patch_name)
-    with lzma.open(patch_name) as f, open(patch_name[:-3], 'wb') as fout:
-        file_content = f.read()
-        fout.write(file_content)
+incremental = release["patch"]["incremental"] is not None
+print("# %s incremental version" % ("is" if incremental else "not"))
+patch_url = release["patch"]["incremental" if incremental else "full"]
+patch_name = patch_url.split("/")[-1]
+print(patch_url)
+urlretrieve(patch_url, patch_name)
+with lzma.open(patch_name) as f, open(
+        patch_name[:-3], 'wb') as fout:
+    file_content = f.read()
+    fout.write(file_content)
 
 
 mypath = "../linux-patches/"
@@ -178,14 +145,9 @@ for i in filenames:
         print("we already have last patch: " + i)
         patch_found = 1
 
-if new_version != 1:
-    if patch_found == 0:
-        shutil.move(incremental_patch_name[:-3], '../linux-patches/' +
-                    incremental_patch_name[:-3] + '.patch')
-else:
-    if patch_found == 0:
-        shutil.move(patch_name[:-3], '../linux-patches/' + patch_name[:-3] +
-                    '.patch')
+if patch_found == 0:
+    shutil.move(patch_name[:-3], '../linux-patches/' +
+                patch_name[:-3] + '.patch')
 
 base = []
 extra = []
@@ -208,23 +170,6 @@ print(experimental)
 
 cwd = os.getcwd()
 
-bashCommand = "chmod +x patch-kernel.sh"
-print(bashCommand)
-process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-output, error = process.communicate()
-print(output)
-eprint(error)
-
-bashCommand = "chmod +x ../clean.sh"
-print(bashCommand)
-process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-output, error = process.communicate()
-print(output)
-eprint(error)
-
-bashCommand = "chmod +x find.sh"
-print(bashCommand)
-process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-output, error = process.communicate()
-print(output)
-eprint(error)
+chmod_ixusr("patch-kernel.sh")
+chmod_ixusr("../clean.sh")
+chmod_ixusr("find.sh")
