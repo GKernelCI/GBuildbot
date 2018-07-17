@@ -1,0 +1,1 @@
+assume-digests binpkg-logs buildpkg config-protect-if-modified distlocks ebuild-locks fixlafiles merge-sync multilib-strict news nodoc noinfo noman parallel-fetch preserve-libs protect-owned sandbox sfperms strict unknown-features-warn unmerge-logs unmerge-orphans userfetch userpriv usersandbox usersync xattr

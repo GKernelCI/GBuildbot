@@ -1,0 +1,5 @@
+#!/bin/sh
+# This script created by AQEMU
+/usr/bin/qemu-system-arm -kernel $1 \
+-initrd armpayload-initramfs.gz \
+-machine virt -nographic -serial mon:stdio

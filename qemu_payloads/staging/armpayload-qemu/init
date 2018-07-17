@@ -1,0 +1,7 @@
+#!/bin/sh
+dmesg -n 1
+mount -t proc none /proc
+echo "[$(date --rfc-2822)] boot complete."
+uname -a
+echo "[$(date --rfc-2822)] powering off."
+/bin/busybox poweroff -f

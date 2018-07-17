@@ -1,0 +1,1 @@
+-O2 -pipe -fomit-frame-pointer -fno-strict-aliasing

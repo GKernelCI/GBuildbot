@@ -1,0 +1,6 @@
+#!/bin/sh
+# This script created by AQEMU
+/usr/bin/qemu-system-x86_64 -kernel $1 \
+-cpu SandyBridge -machine accel=kvm \
+-nographic -append "console=ttyS0" \
+-initrd amd64payload-initramfs.gz
