@@ -14,8 +14,9 @@ vmlinuz_list = d["version"]
 d.close()
 
 qemu_timeout = 360
-BaseURI = 'http://gentoo.osuosl.org/experimental/amd64/openstack/'\
+BaseURIamd64 = 'http://gentoo.osuosl.org/experimental/amd64/openstack/'\
           'gentoo-openstack-amd64-default-'
+BaseURIarm = ''
 SnapshotDate = 'latest'
 
 
@@ -51,14 +52,19 @@ elif arch == 'arm':
         ' -sd ' + vmimage + ' -nographic -append "console=ttyAMA0,115200' \
         ' root=/dev/mmcblk0 rootwait"'
 
-isfile = os.path.isfile(vmimage)
-if arch == 'amd64' and not isfile:
-    ImageURI = BaseURI + SnapshotDate + '.qcow2'
+if not os.path.isfile(vmimage):
+    if arch == 'amd64':
+        ImageURI = BaseURIamd64 + SnapshotDate + '.qcow2'
+    elif arch == 'arm':
+        ImageURI = BaseURIarm + SnapshotDate + '.qcow2'
     cmd_wget = 'wget -N ' + ImageURI + ' -O ' + vmimage
     proc2 = subprocess.Popen(cmd_wget, stdout=subprocess.PIPE, shell=True)
     for line in proc2.stdout:
         a = line.strip()
         print(a)
+    if not os.path.isfile(vmimage):
+        print("Cannot download file: " + ImageURI)
+        sys.exit(1)
 else:
     print("vmimage present: " + vmimage)
 
