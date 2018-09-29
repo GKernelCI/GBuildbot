@@ -6,7 +6,13 @@ import os.path
 import shelve
 import sys
 
-arch = "amd64" if len(sys.argv) < 2 else sys.argv[1]
+if len(sys.argv) < 4:
+    print("Usage: qemu_check.py [<arch>] <worker#> <build#>")
+    sys.exit(1)
+#arch = "amd64" if len(sys.argv) < 4 else sys.argv[1]
+arch   = sys.argv[1]
+worker = sys.argv[2]
+build  = sys.argv[3]
 
 conf_var = "shelve"
 d = shelve.open(conf_var)
@@ -38,13 +44,13 @@ def command(cmd, timeout_sec):
     return work
 
 if arch == 'amd64':
-    vmimage = "/tmp/gentoo.qcow2"
+    vmimage = "/tmp/gentoo-amd64-w" + worker + "-b" + build + ".qcow2"
     cmd_qemu = 'qemu-system-x86_64 -m 128M -kernel ' \
         'linux-amd64-build/arch/x86/boot/bzImage' \
         ' -nographic -serial mon:stdio -hda ' + vmimage + \
         ' -append "root=/dev/sda1 console=ttyS0,115200n8 console=tty0"'
 elif arch == 'arm':
-    vmimage = "/tmp/stage3-armv7a_hardfp-latest.qcow2"
+    vmimage = "/tmp/gentoo-arm-w" + worker + "-b" + build + ".qcow2"
     cmd_qemu = 'qemu-system-arm -M vexpress-a9 -smp 2 -m 1G -kernel ' \
         'linux-arm-build/arch/arm/boot/zImage' \
         ' -dtb linux-arm-build/arch/arm/boot/dts/vexpress-v2p-ca9.dtb' \
