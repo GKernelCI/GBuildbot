@@ -14,12 +14,17 @@ packages = [v for v in packages if "Manifest" not in v]
 gentoo_repo = '../gentoo/'
 
 
-def command(cmd):
+def command(cmd, fail_trigger):
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True,
                             universal_newlines=True)
+    fail = False
     for line in proc.stdout:
-        a = line.strip('')
+        a = line.strip()
         print(a)
+        if fail_trigger in str(a):
+            fail = True
+    return fail
+
 
 conf_var = "shelve"
 d = shelve.open(conf_var)
@@ -52,9 +57,20 @@ for package in packages:
 ebuild_manifest.close()
 ebuild_merge.close()
 
+# make scripts executable
 os.chmod('ebuild_merge.sh', 0o755)
 os.chmod('ebuild_manifest.sh', 0o755)
 
+# run the built scripts ...
+failed = command('./ebuild_manifest.sh', 'Error')
+if failed:
+    print("Manifest generation failed")
+    sys.exit(1)
+
+failed = command('./ebuild_merge.sh', 'Error')
+if failed:
+    print("Emerging failed")
+    sys.exit(1)
 
 d["version"] = versions
 d.close()
