@@ -109,7 +109,7 @@ for i in tr_table:
         break
 conf_var = "shelve"
 d = shelve.open(conf_var)
-d["version"] = new_version_revision
+d["version"] = [new_version_revision]
 d.close()
 print(new_version_revision)
 new_version_split = new_version_revision.split('.', 2)
