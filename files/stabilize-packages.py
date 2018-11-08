@@ -13,16 +13,16 @@ gentoo_repo = '../gentoo/'
 versions = []
 
 
-def command(cmd, fail_trigger):
+def run_command(cmd, trigger_text):
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True,
                             universal_newlines=True)
-    fail = False
+    not_found = True
     for line in proc.stdout:
         a = line.strip()
         print(a)
-        if fail_trigger in str(a):
-            fail = True
-    return fail
+        if trigger_text in str(a):
+            not_found = False
+    return not_found
 
 
 # write script headers
@@ -56,13 +56,13 @@ os.chmod('ebuild_merge.sh', 0o755)
 os.chmod('ebuild_manifest.sh', 0o755)
 
 # run the built scripts ...
-failed = command('./ebuild_manifest.sh', 'Error')
-if failed:
+result = run_command('./ebuild_manifest.sh', 'Error')
+if result is False:
     print("Manifest generation failed")
     sys.exit(1)
 
-failed = command('./ebuild_merge.sh', 'Error')
-if failed:
+result = run_command('./ebuild_merge.sh', 'Error')
+if result is False:
     print("Emerging failed")
     sys.exit(1)
 
