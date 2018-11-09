@@ -46,8 +46,11 @@ ebuild_manifest = open("ebuild_manifest.sh", 'a')
 ebuild_merge = open("ebuild_merge.sh", 'a')
 for package in packages:
     # .sort(key=lambda s: [int(u) for u in s.split('.')]):
-    print("Processing: {0}".format(package))
     ebuild_location = gentoo_repo + package
+    if not os.path.exists(ebuild_location):
+        print("Skipping: {0}".format(package))
+        continue
+    print("Processing: {0}".format(package))
     ebuild_full = 'ROOT=kernel_sources/ /usr/bin/ebuild ' + ebuild_location
     print("  {0}".format(ebuild_full))
 
