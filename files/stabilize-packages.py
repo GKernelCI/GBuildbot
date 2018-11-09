@@ -11,6 +11,7 @@ packages = [v for v in packages if "Manifest" not in v]
 
 gentoo_repo = '../gentoo/'
 versions = []
+fail_text = ['Error', 'Permission denied', 'does not exist']
 
 
 def run_command(cmd, trigger_text):
@@ -20,8 +21,14 @@ def run_command(cmd, trigger_text):
     for line in proc.stdout:
         a = line.strip()
         print(a)
-        if trigger_text in str(a):
-            not_found = False
+        if isinstance(trigger_text, str):
+            if trigger_text in str(a):
+                not_found = False
+        else:
+            for my_trig in trigger_text:
+                if my_trig in str(a):
+                    not_found = False
+                    break
     return not_found
 
 
@@ -56,12 +63,12 @@ os.chmod('ebuild_merge.sh', 0o755)
 os.chmod('ebuild_manifest.sh', 0o755)
 
 # run the built scripts ...
-result = run_command('./ebuild_manifest.sh', 'Error')
+result = run_command('./ebuild_manifest.sh', fail_text)
 if result is False:
     print("Manifest generation failed")
     sys.exit(1)
 
-result = run_command('./ebuild_merge.sh', 'Error')
+result = run_command('./ebuild_merge.sh', fail_text)
 if result is False:
     print("Emerging failed")
     sys.exit(1)
