@@ -21,13 +21,15 @@ def run_command(cmd, trigger_text):
     for line in proc.stdout:
         a = line.strip()
         print(a)
-        if isinstance(trigger_text, str) and trigger_text in str(a):
+        if isinstance(trigger_text, str):
+            if trigger_text in str(a):
                 not_found = False
         else:
-            for my_trig in trigger_text:
-                if my_trig in str(a):
+            if any(s in str(a) for s in trigger_text):
+            #for my_trig in :
+                #if my_trig in :
                     not_found = False
-                    break
+                    #break
     return not_found
 
 
