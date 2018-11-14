@@ -5,11 +5,11 @@ import shelve
 import subprocess
 
 
-def command(cmd):
+def run_command(cmd):
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True,
-                            universal_newlines=True)
+                            stderr=subprocess.PIPE, universal_newlines=True)
     for line in proc.stdout:
-        a = line.strip('')
+        a = line.strip()
         print(a)
 
 conf_var = "files/shelve"
@@ -19,28 +19,34 @@ d.close()
 
 # filter for Manifest files
 packages = [v for v in packages if "Manifest" not in v]
-gentoo_repo = 'gentoo/'
+gentoo_repo = '../../gentoo-repo/'
 
 # remove any existing script
 if os.path.isfile('ebuild_unmerge.sh'):
     os.unlink('ebuild_unmerge.sh')
 
-# write script header shebang
-cmd_echo = 'echo "#!/bin/sh" > ebuild_unmerge.sh'
-command(cmd_echo)
+# write script headers
+with open('ebuild_unmerge.sh', 'w') as ebuild_unmerge:
+    ebuild_unmerge.write("#!/bin/sh\n")
+    ebuild_unmerge.write("set -e\n")
 
 # Do the Thing ...
 # 1) build the ebuild script
+ebuild_unmerge = open("ebuild_unmerge.sh", 'a')
 for package in packages:
-    print("Cleaning package: {0}".format(package))
     ebuild_location = gentoo_repo + package
-    ebuild_full = "ROOT=kernel_sources/ /usr/bin/ebuild " + ebuild_location
-    ebuild_unmerge = ebuild_full + ' unmerge '
-    print("  {0}".format(ebuild_unmerge))
-    cmd_echo = 'echo "' + ebuild_unmerge + '" >> ebuild_unmerge.sh'
-    command(cmd_echo)
+    if not os.path.exists(ebuild_location):
+        print("Skipping: {0}".format(package))
+        continue
+    print("Cleaning package: {0}".format(package))
+    ebuild_full = "ROOT=kernel_sources /usr/bin/ebuild " + ebuild_location
+    ebuild_cmd = ebuild_full + ' unmerge clean'
+    print("  {0}".format(ebuild_cmd))
+    ebuild_unmerge.write(ebuild_cmd)
+ebuild_unmerge.close()
 
-# 2) execute it
-cmd_echo = 'chmod +x ebuild_unmerge.sh'
-command(cmd_echo)
-command('./ebuild_unmerge.sh')
+# 2) make script executable
+os.chmod('ebuild_merge.sh', 0o755)
+
+# 3) execute it
+run_command('./ebuild_unmerge.sh')
