@@ -1,10 +1,9 @@
 #!/usr/bin/env python
-import subprocess
 import sys
-from threading import Timer
 import os.path
 import shelve
-import sys
+import subprocess
+from threading import Timer
 
 if len(sys.argv) < 4:
     print("Usage: qemu_check.py <arch> <builder> <build#>")
@@ -45,7 +44,7 @@ def command(cmd, timeout_sec):
             print(line.strip())
             if 'This is localhost' in str(line.strip()):
                 work = True
-                break
+                # break
     finally:
         timer.cancel()
     proc.kill()
@@ -67,8 +66,8 @@ elif arch == 'arm':
     cmd_qemu = 'qemu-system-arm -M vexpress-a9 -smp 2 -m 1G -kernel ' \
         'linux-arm-build/arch/arm/boot/zImage' \
         ' -dtb linux-arm-build/arch/arm/boot/dts/vexpress-v2p-ca9.dtb' \
-        ' -sd /tmp/' + vmimage_dest + ' -nographic -append "console=ttyAMA0,115200' \
-        ' root=/dev/mmcblk0 rootwait"'
+        ' -sd /tmp/' + vmimage_dest + ' -nographic -append ' \
+        '"console=ttyAMA0,115200 root=/dev/mmcblk0 rootwait"'
 
 # Check for existing base image, download if needed
 if not os.path.isfile('/tmp/' + vmimage_src):
@@ -83,9 +82,10 @@ else:
     print("vmimage present: " + vmimage_src)
 
 # Create snapshot of base image for build
-cmd_clone_qemu_img = 'qemu-img create -f qcow2 -b /tmp/' + vmimage_src + ' ' + \
-                     '/tmp/' + vmimage_dest
-proc2 = subprocess.Popen(cmd_clone_qemu_img, stdout=subprocess.PIPE, shell=True)
+cmd_clone_qemu_img = 'qemu-img create -f qcow2 -b /tmp/' + vmimage_src + \
+                     ' /tmp/' + vmimage_dest
+proc2 = subprocess.Popen(cmd_clone_qemu_img, stdout=subprocess.PIPE,
+                         shell=True)
 for line in proc2.stdout:
     print(line.strip())
 
