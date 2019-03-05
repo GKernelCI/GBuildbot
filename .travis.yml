@@ -6,8 +6,9 @@
 language: python
 
 python:
-  - "2.7"
-# work only with python 2 as now
+#  - "2.7"
+  - "3.5"
+## work only with python 2 as now
 
 before_install:
   - pip install --upgrade pip
