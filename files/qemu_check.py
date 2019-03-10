@@ -9,10 +9,15 @@ import sys
 if len(sys.argv) < 4:
     print("Usage: qemu_check.py <arch> <builder> <build#>")
     sys.exit(1)
-#arch = "amd64" if len(sys.argv) < 4 else sys.argv[1]
-arch   = sys.argv[1]
-builder = sys.argv[2]
-build_id  = sys.argv[3]
+# arch = "amd64" if len(sys.argv) < 4 else sys.argv[1]
+
+arch = sys.argv[1]
+build_id = sys.argv[3]
+if (arch in sys.argv[2]):
+    builder = sys.argv[2].split(':')[0]
+else:
+    builder = sys.argv[2]
+
 
 conf_var = "shelve"
 d = shelve.open(conf_var)
