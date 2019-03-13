@@ -46,7 +46,7 @@ for package in packages:
 ebuild_unmerge.close()
 
 # 2) make script executable
-os.chmod('ebuild_merge.sh', 0o755)
+os.chmod('ebuild_unmerge.sh', 0o755)
 
 # 3) execute it
 run_command('./ebuild_unmerge.sh')
