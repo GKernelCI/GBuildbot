@@ -21,8 +21,8 @@ case "$1" in
 		;;
 esac
 
-MAKEOPTS="$MAKEOPTS O=$((realpath $0) && cd .. )/linux-$1-build"
-
 shift
 
-make $MAKEOPTS $*
+cd(){ command cd "$1" ; }
+cd linux-*
+make $MAKEOPTS
