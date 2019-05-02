@@ -139,8 +139,8 @@ else:
     extract(kernel_tarxz)
 
 print("new_version_split"+str(new_version_split))
-len_new_version_split = len(new_version_split)
-revision = new_version_split[len_new_version_split-1]
+major_ver = new_version_split[0]
+revision = new_version_split[-1]
 if "[EOL]" in revision:
     revision = revision[:-6]
 print(revision)
@@ -156,8 +156,8 @@ patch_name = "patch-" + patch_version + ".xz"
 if int(revision) > 1:
     print("# is incremental version")
     print("revision: " + str(revision))
-    patch_url = "http://cdn.kernel.org/pub/linux/kernel/v4.x/incr/" +\
-                incremental_patch_name
+    patch_url = "http://cdn.kernel.org/pub/linux/kernel/v" + \
+        major_ver + ".x/incr/" + incremental_patch_name
     print(patch_url)
     urlretrieve(patch_url, incremental_patch_name)
     with lzma.open(incremental_patch_name) as f, open(
@@ -167,7 +167,8 @@ if int(revision) > 1:
 else:
     print("# not incremental version")
     print("revision: " + str(revision))
-    patch_url = "http://cdn.kernel.org/pub/linux/kernel/v4.x/" + patch_name
+    patch_url = "http://cdn.kernel.org/pub/linux/kernel/v" + \
+        major_ver + ".x/" + patch_name
     print(patch_url)
     urlretrieve(patch_url, patch_name)
     with lzma.open(patch_name) as f, open(patch_name[:-3], 'wb') as fout:
