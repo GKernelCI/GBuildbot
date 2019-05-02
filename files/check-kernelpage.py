@@ -8,15 +8,14 @@ import subprocess
 import sys
 import tarfile
 import os
+import pathlib
 
-cwd = os.getcwd()
 
-p = Path(cwd).absolute()
-parent_dir = p.parents[1]
-p.rename(parent_dir / p.name)
-
-shutil.copy("clean.sh",p)
-shutil.copy("clean.py",p)
+p = pathlib.Path(os.getcwd()).absolute()
+parent_dir = p.parents[0]
+print(parent_dir)
+shutil.copy2("clean.py",parent_dir)
+shutil.copy2("clean.sh",parent_dir)
 
 if sys.version_info.major == 3:
     from urllib.request import urlretrieve
