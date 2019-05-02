@@ -7,6 +7,16 @@ import shutil
 import subprocess
 import sys
 import tarfile
+import os
+
+cwd = os.getcwd()
+
+p = Path(cwd).absolute()
+parent_dir = p.parents[1]
+p.rename(parent_dir / p.name)
+
+shutil.copy("clean.sh",p)
+shutil.copy("clean.py",p)
 
 if sys.version_info.major == 3:
     from urllib.request import urlretrieve
@@ -112,7 +122,7 @@ d = shelve.open(conf_var)
 d["version"] = [new_version_revision]
 d.close()
 print(new_version_revision)
-new_version_split = new_version_revision.split('.', 2)
+new_version_split = new_version_revision.split('.',2)
 new_version = new_version_split[0] + '.' + new_version_split[1]
 print("new version: " + new_version)
 
@@ -171,40 +181,39 @@ f = []
 for (dirpath, dirnames, filenames) in walk(mypath):
     f.extend(filenames)
     break
+    patch_found = 0
+    for i in filenames:
+        if new_version in i:
+            print("we already have last patch: " + i)
+            patch_found = 1
 
-patch_found = 0
-for i in filenames:
-    if new_version in i:
-        print("we already have last patch: " + i)
-        patch_found = 1
-
-if new_version != 1:
-    if patch_found == 0:
-        shutil.move(incremental_patch_name[:-3], '../linux-patches/' +
+    if new_version != 1:
+        if patch_found == 0:
+            shutil.move(incremental_patch_name[:-3], '../linux-patches/' +
                     incremental_patch_name[:-3] + '.patch')
-else:
-    if patch_found == 0:
-        shutil.move(patch_name[:-3], '../linux-patches/' + patch_name[:-3] +
+    else:
+        if patch_found == 0:
+            shutil.move(patch_name[:-3], '../linux-patches/' + patch_name[:-3] +
                     '.patch')
 
-base = []
-extra = []
-experimental = []
-for i in filenames:
-    if re.match(r'^[012]', i):
-        base.append(i)
-    if re.match(r'^[34]', i):
-        extra.append(i)
-    if re.match(r'^50', i):
-        experimental.append(i)
+    base = []
+    extra = []
+    experimental = []
+    for i in filenames:
+        if re.match(r'^[012]', i):
+            base.append(i)
+        if re.match(r'^[34]', i):
+            extra.append(i)
+        if re.match(r'^50', i):
+            experimental.append(i)
 # remove 0000_README file from the list
-base.pop(1)
-print("base patch")
-print(sorted(base))
-print("extra patch")
-print(extra)
-print("experimental patch")
-print(experimental)
+    base.pop(1)
+    print("base patch")
+    print(sorted(base))
+    print("extra patch")
+    print(extra)
+    print("experimental patch")
+    print(experimental)
 
 cwd = os.getcwd()
 

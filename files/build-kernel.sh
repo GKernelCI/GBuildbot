@@ -2,12 +2,19 @@
 
 set -e
 
-MAKEOPTS="-j$(( $(getconf _NPROCESSORS_ONLN) + 1 ))"
+cd(){ command cd "$1" ; }
+
+cd linux-*
 
 if [ $# -lt 1 ]; then
 	echo "Usage: $(basename $0) arch"
 	exit 1
 fi
+
+make menuconfig
+
+MAKEOPTS="-j$(( $(getconf _NPROCESSORS_ONLN) + 1 ))"
+
 
 case "$1" in
 	"amd64")
@@ -21,8 +28,8 @@ case "$1" in
 		;;
 esac
 
-MAKEOPTS="$MAKEOPTS O=$((realpath $0) && cd .. )/linux-$1-build"
-
 shift
 
-make $MAKEOPTS $*
+make $MAKEOPTS
+
+/bin/bash $(pwd)/../$(basename $0) $1
