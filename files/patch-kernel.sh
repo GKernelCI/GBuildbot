@@ -78,8 +78,8 @@ if [ ! -z "${kernel_version}" ]; then
 		yes "" | make ARCH=${kernel_arch_target} O=${kernel_builddir} defconfig
 	else
 		echo "Using ~/kernel-config/config-${version}"
-		cp ~/kernel-config/config-"${version}" .config
 		make mrproper
+		cp ~/kernel-config/config-"${version}" .config
 		yes "" | make ARCH=${kernel_arch_target} O=${kernel_builddir} oldconfig
 	fi
 fi
