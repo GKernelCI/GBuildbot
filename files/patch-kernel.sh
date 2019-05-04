@@ -1,4 +1,5 @@
 #!/bin/sh
+set -eu
 
 # Usage info
 show_help() {
