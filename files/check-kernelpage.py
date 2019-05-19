@@ -188,6 +188,8 @@ else:
         shutil.move(patch_name[:-3], '../linux-patches/' + patch_name[:-3] +
                     '.patch')
 
+os.chdir(mypath)
+
 base = []
 extra = []
 experimental = []
@@ -197,7 +199,8 @@ for i in filenames:
     if re.match(r'^[34]', i):
         extra.append(i)
     if re.match(r'^50', i):
-        experimental.append(i)
+        #experimental.append(i)
+        os.unlink(i)
 # remove 0000_README file from the list
 base.pop(1)
 print("base patch")
