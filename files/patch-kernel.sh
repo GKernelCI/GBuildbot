@@ -68,7 +68,7 @@ if [ ! -z "${kernel_version}" ]; then
 	elif [ ! -f ~/kernel-config/config-"${version}" ]; then
 		echo "Kernel config-${version} not found!"
 		#echo "Trying configuration in /proc/config.gz.."
-		if [ ! -f ~/kernel-config ]; then
+		if [ ! -f ~/kernel-config ] && [ -r /proc/config.gz ]; then
 			echo "Using /proc/config.gz"
 			zcat /proc/config.gz > .config
 		else
