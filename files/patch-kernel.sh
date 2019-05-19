@@ -66,13 +66,13 @@ if [ ! -z "${kernel_version}" ]; then
 		echo "Using defconfig ${defconfig}"
 		make ARCH=${kernel_arch_target} O=${kernel_builddir} ${defconfig}
 	elif [ ! -f ~/kernel-config/config-"${version}" ]; then
-		echo "File not found!"
-		echo "searching configuration in /proc/config.gz"
+		echo "Kernel config-${version} not found!"
+		#echo "Trying configuration in /proc/config.gz.."
 		if [ ! -f ~/kernel-config ]; then
 			echo "Using /proc/config.gz"
 			zcat /proc/config.gz > .config
 		else
-			echo "using defconfig"
+			echo "Using defconfig"
 			make ARCH=${kernel_arch_target} O=${kernel_builddir} defconfig
 		fi
 		make mrproper
