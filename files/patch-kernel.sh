@@ -29,7 +29,7 @@ while getopts a:hvk: opt; do
     case $opt in
         a)
             kernel_arch=$OPTARG
-	    ;;
+            ;;
         h)
             show_help
             exit 0
@@ -52,9 +52,9 @@ if [ $kernel_arch = "arm" ]; then
 fi
 
 # End of file
-for i in ../linux-patches/*.patch; do 
+for i in ../linux-patches/*.patch; do
 	echo "${i}"
-	yes "" | patch -p1 --no-backup-if-mismatch -f -N -s -d linux-*/ < "${i}"; 
+	yes "" | patch -p1 --no-backup-if-mismatch -f -N -s -d linux-*/ < "${i}";
 done
 kernel_builddir="$(dirname $(realpath $0))/linux-${kernel_arch}-build"
 cd linux-*/ || exit 1
