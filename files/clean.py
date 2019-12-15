@@ -42,7 +42,7 @@ for package in packages:
     ebuild_full = "ROOT=kernel_sources /usr/bin/ebuild " + ebuild_location
     ebuild_cmd = ebuild_full + ' unmerge clean'
     print("  {0}".format(ebuild_cmd))
-    ebuild_unmerge.write(ebuild_cmd)
+    ebuild_unmerge.write(ebuild_cmd + "\n")
 ebuild_unmerge.close()
 
 # 2) make script executable
