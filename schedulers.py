@@ -38,7 +38,7 @@ def eclass_change(change):
         return False
 
 architecture_testing_list = ['amd64']
-branches_list = ['5.2', '5.1', '4.20', '4.19', '4.18',
+branches_list = ['5.4', '5.3', '4.20', '4.19', '4.18',
                  '4.14', '4.9', '4.8', '4.4', '4.1']
 
 def builderNames(branch):
