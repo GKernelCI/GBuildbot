@@ -23,10 +23,12 @@ sources.append(changes.GitPoller(
 sources.append(changes.GitPoller(
     repourl='https://github.com/aliceinwire/linux-patches',
     only_tags=True,
-    category="gentoo-tags-git"))
+    category="gentoo-tags-git",
+    pollinterval=300))
 
 sources.append(changes.GitPoller(
     repourl='https://github.com/aliceinwire/linux-patches',
     branches=True,
-    category="gentoo-git"))
+    category="gentoo-git",
+    pollinterval=300))
 
