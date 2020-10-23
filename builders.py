@@ -134,21 +134,21 @@ for kernel_branch in branches_list:
     for arch in architecture_testing_list:
         builders.append(
               util.BuilderConfig(name=kernel_branch + ':' + arch,
-                                 workernames=["kernelci"],
+                                 workernames=[os.environ.get('WORKER_NAME')],
                         factory=download_new_patch_and_build_kernel(kernel_branch, arch)))
 
 builders.append(
     util.BuilderConfig(name='gentoo_sources',
-                       workernames=["kernelci"],
+                       workernames=[os.environ.get('WORKER_NAME')],
                        factory=test_gentoo_sources()))
 
 builders.append(
     util.BuilderConfig(name='other_sources',
-                       workernames=["kernelci"],
+                       workernames=[os.environ.get('WORKER_NAME')],
                        factory=test_gentoo_sources()))
 
 builders.append(
     util.BuilderConfig(name='eclass_change',
-                       workernames=["kernelci"],
+                       workernames=[os.environ.get('WORKER_NAME')],
                        factory=test_gentoo_sources()))
 
