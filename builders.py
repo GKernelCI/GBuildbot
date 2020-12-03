@@ -15,8 +15,8 @@ import os
 
 builders = []
 architecture_testing_list = ['amd64']
-branches_list = ['5.4', '5.3', '4.20', '4.19', '4.18',
-                 '4.14', '4.9', '4.8', '4.4', '4.1']
+branches_list = ['5.10', '5.9', '5.4', '4.19',
+                 '4.14', '4.9', '4.4']
 
 for kernel_branch in branches_list:
     for arch in architecture_testing_list:
