@@ -25,7 +25,7 @@ def download_new_patch_and_build_kernel(version, arch):
                                  workdir="build/ghelper", branch='master'))
 
     factory.addStep(steps.ShellCommand(name="Looking for new upstream release",
-                                       command=["/usr/bin/python",
+                                       command=["/usr/bin/python3",
                                                 "check-kernelpage.py",
                                                 "--version", version],
                                        workdir="build/ghelper/files/",
@@ -52,7 +52,7 @@ def download_new_patch_and_build_kernel(version, arch):
                                        haltOnFailure=True))
 
     factory.addStep(steps.ShellCommand(name="Booting with QEMU",
-                                       command=["/usr/bin/python", "qemu_check.py", arch,
+                                       command=["/usr/bin/python3", "qemu_check.py", arch,
                                                 util.Property('buildername'), util.Property('buildnumber')],
                                        workdir="build/ghelper/files/", timeout=3600))
     return factory
@@ -63,7 +63,7 @@ def filterFiles(props):
     files = props.getBuild().allFiles()
     print(files)
     build_files = [s for s in files if "sys-kernel/" in s]
-    command = ["/usr/bin/python", "stabilize-packages.py"]
+    command = ["/usr/bin/python3", "stabilize-packages.py"]
     for file in build_files:
         command.append(file)
     print(str(command))
