@@ -7,6 +7,12 @@ import os
 
 def download_new_patch_and_build_kernel(version, arch):
     factory = util.BuildFactory()
+    factory.addStep(steps.ShellCommand(description="Cleaning enviroment",
+                                 descriptionDone='Cleaned enviroment',
+                                 name='Clean enviroment',
+                                 command=["/bin/bash", "-c", "umask 022; rm -rf *"],
+                                 timeout=2400))
+
     factory.addStep(steps.GitHub(name="Fetching linux-patches",
                                  repourl='https://github.com/gentoo/linux-patches',
                                  mode='incremental',
@@ -49,12 +55,6 @@ def download_new_patch_and_build_kernel(version, arch):
                                        command=["/usr/bin/python", "qemu_check.py", arch,
                                                 util.Property('buildername'), util.Property('buildnumber')],
                                        workdir="build/ghelper/files/", timeout=3600))
-
-    factory.addStep(steps.ShellCommand(name="Cleanup",
-                                       command=["/bin/sh", "clean.sh"],
-                                       workdir="build/", 
-                                       alwaysRun=True))
-
     return factory
 
 
@@ -76,6 +76,11 @@ def pull_repourl(props):
 
 def test_gentoo_sources():
     factory = util.BuildFactory()
+    factory.addStep(steps.ShellCommand(description="Cleaning enviroment",
+                                 descriptionDone='Cleaned enviroment',
+                                 name='Clean enviroment',
+                                 command=["/bin/bash", "-c", "umask 022; rm -rf *"],
+                                 timeout=2400))
     factory.addStep(steps.GitHub(name="Fetching repository",
                                  repourl=pull_repourl,
                                  mode='incremental', workdir="build/gentoo", shallow=50))
@@ -84,15 +89,8 @@ def test_gentoo_sources():
                                  mode='incremental',
                                  alwaysUseLatest=True,
                                  workdir="build/ghelper", branch='master'))
-
     factory.addStep(steps.ShellCommand(name="Stabilizing package",
                                        command=filterFiles,
                                        workdir="build/ghelper/files/"))
-    # factory.addStep(steps.ShellCommand(command=["/usr/bin/python", "qemu_check.py"],
-    #                                workdir="build/files/"))
-    factory.addStep(steps.ShellCommand(name="Cleanup",
-                                       command=["/bin/sh", "clean.sh"],
-                                       workdir="build/", 
-                                       alwaysRun=True))
     return factory
 
