@@ -28,22 +28,22 @@ def download_new_patch_and_build_kernel(version, arch):
                                        command=["/usr/bin/python3",
                                                 "check-kernelpage.py",
                                                 "--version", version],
-                                       workdir="build/ghelper/files/",
+                                       workdir="build/ghelper/",
                                        haltOnFailure=True))
 
     factory.addStep(steps.ShellCommand(name="Patching kernel",
                                        command=["/bin/sh", "patch-kernel.sh",
                                                 "-a", arch, "-k", version],
-                                       workdir="build/ghelper/files/",
+                                       workdir="build/ghelper/",
                                        haltOnFailure=True))
 
     factory.addStep(steps.ShellCommand(name="Listing rejected files",
                                        command=["/bin/sh", "find.sh"],
-                                       workdir="build/ghelper/files/"))
+                                       workdir="build/ghelper/"))
 
     factory.addStep(steps.ShellCommand(name="Building kernel",
                                        command=["/bin/sh", "../build-kernel.sh", arch],
-                                       workdir="build/ghelper/files/linux-" + version + "/",
+                                       workdir="build/ghelper/linux-" + version + "/",
                                        haltOnFailure=True))
 
     factory.addStep(steps.ShellCommand(name="Building modules",
@@ -51,10 +51,15 @@ def download_new_patch_and_build_kernel(version, arch):
                                        workdir="build/ghelper/linux-" + version + "/",
                                        haltOnFailure=True))
 
-    factory.addStep(steps.ShellCommand(name="Booting with QEMU",
-                                       command=["/usr/bin/python3", "qemu_check.py", arch,
+    factory.addStep(steps.ShellCommand(name="Move kernel to fileserver",
+                                       command=["/bin/sh", "to_fileserver.sh", arch,
                                                 util.Property('buildername'), util.Property('buildnumber')],
-                                       workdir="build/ghelper/files/", timeout=3600))
+                                       workdir="build/ghelper/", timeout=3600))
+    
+    factory.addStep(steps.ShellCommand(name="Run Gentoo kernel tests",
+                                       command=["/bin/sh", "run_tests.sh", arch,
+                                                util.Property('buildername'), util.Property('buildnumber')],
+                                       workdir="build/ghelper/", timeout=3600))
     return factory
 
 
@@ -91,6 +96,6 @@ def test_gentoo_sources():
                                  workdir="build/ghelper", branch='master'))
     factory.addStep(steps.ShellCommand(name="Stabilizing package",
                                        command=filterFiles,
-                                       workdir="build/ghelper/files/"))
+                                       workdir="build/ghelper/"))
     return factory
 
