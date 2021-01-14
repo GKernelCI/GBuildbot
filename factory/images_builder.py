@@ -36,37 +36,37 @@ def download_new_patch_and_build_kernel(version, arch):
                                        haltOnFailure=True))
 
     factory.addStep(steps.ShellCommand(name="Patching kernel",
-                                       command=["/bin/sh", "patch-kernel.sh",
+                                       command=["/bin/bash", "patch-kernel.sh",
                                                 "-a", arch, "-k", version],
                                        workdir="build/ghelper/",
                                        logEnviron=False,
                                        haltOnFailure=True))
 
     factory.addStep(steps.ShellCommand(name="Listing rejected files",
-                                       command=["/bin/sh", "find.sh"],
+                                       command=["/bin/bash", "find.sh"],
                                        logEnviron=False,
                                        workdir="build/ghelper/"))
 
     factory.addStep(steps.ShellCommand(name="Building kernel",
-                                       command=["/bin/sh", "../build-kernel.sh", arch],
+                                       command=["/bin/bash", "../build-kernel.sh", arch],
                                        workdir="build/ghelper/linux-" + version + "/",
                                        logEnviron=False,
                                        haltOnFailure=True))
 
     factory.addStep(steps.ShellCommand(name="Building modules",
-                                       command=["/bin/sh", "../build-kernel.sh", arch, "modules"],
+                                       command=["/bin/bash", "../build-kernel.sh", arch, "modules"],
                                        workdir="build/ghelper/linux-" + version + "/",
                                        logEnviron=False,
                                        haltOnFailure=True))
 
     factory.addStep(steps.ShellCommand(name="Move kernel to fileserver",
-                                       command=["/bin/sh", "to_fileserver.sh", arch,
+                                       command=["/bin/bash", "to_fileserver.sh", arch,
                                                 util.Property('buildername'), util.Property('buildnumber')],
                                        logEnviron=False,
                                        workdir="build/ghelper/", timeout=3600))
     
     factory.addStep(steps.ShellCommand(name="Run Gentoo kernel tests",
-                                       command=["/bin/sh", "run_tests.sh", arch,
+                                       command=["/bin/bash", "run_tests.sh", arch,
                                                 util.Property('buildername'), util.Property('buildnumber')],
                                        logEnviron=False,
                                        workdir="build/ghelper/", timeout=3600))
