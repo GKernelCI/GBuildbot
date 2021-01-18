@@ -3,7 +3,16 @@
 from buildbot.plugins import *
 from buildbot.plugins import reporters, util
 from buildbot.process.properties import Interpolate
+from buildbot.status.builder import SUCCESS, SKIPPED, FAILURE
 import os
+
+@util.renderer
+def BuildStatus (step):
+    if step.build.results == FAILURE:
+        return "failed"
+    if step.build.results == SUCCESS:
+        return "passed"
+    return "failed-other"
 
 def download_new_patch_and_build_kernel(version, arch):
     factory = util.BuildFactory()
@@ -69,6 +78,13 @@ def download_new_patch_and_build_kernel(version, arch):
                                        command=["/bin/bash", "run_tests.sh", arch,
                                                 util.Property('buildername'), util.Property('buildnumber')],
                                        logEnviron=False,
+                                       workdir="build/ghelper/", timeout=3600))
+    factory.addStep(steps.ShellCommand(name="Send report to KCIDB",
+                                       command=["/bin/bash", "kcidb/sendtokcidb", version,
+                                                util.Property('buildername'), util.Property('buildnumber'),
+                                                BuildStatus, arch],
+                                       logEnviron=False,
+                                       alwaysRun=True,
                                        workdir="build/ghelper/", timeout=3600))
     return factory
 
