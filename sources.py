@@ -4,7 +4,7 @@ from buildbot.plugins import changes
 
 sources = []
 sources.append(changes.GitHubPullrequestPoller(
-    owner='aliceinwire',
+    owner='GKernelCI',
     branches=None,
     repo='linux-patches'))
 
@@ -21,13 +21,13 @@ sources.append(changes.GitPoller(
     pollinterval=10))
 
 sources.append(changes.GitPoller(
-    repourl='https://github.com/aliceinwire/linux-patches',
+    repourl='https://github.com/GKernelCI/linux-patches.git',
     only_tags=True,
     category="gentoo-tags-git",
     pollinterval=300))
 
 sources.append(changes.GitPoller(
-    repourl='https://github.com/aliceinwire/linux-patches',
+    repourl='https://github.com/GKernelCI/linux-patches.git',
     branches=True,
     category="gentoo-git",
     pollinterval=300))
