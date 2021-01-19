@@ -1,18 +1,51 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from buildbot.plugins import *
+from twisted.internet import defer
 from buildbot.plugins import reporters, util
 from buildbot.process.properties import Interpolate
-from buildbot.status.builder import SUCCESS, SKIPPED, FAILURE
+from buildbot.steps.shell import ShellCommand
+from buildbot.status.builder import SUCCESS, SKIPPED, FAILURE, WARNINGS
+from buildbot.process.buildstep import LogLineObserver
+import re
+import pprint
 import os
 
 @util.renderer
-def BuildStatus (step):
-    if step.build.results == FAILURE:
-        return "failed"
-    if step.build.results == SUCCESS:
-        return "passed"
-    return "failed-other"
+def BuildStatus(props):
+    step = props.getBuild().executedSteps[-1]
+    for i in step.build.executedSteps:
+        if i.name == "Building kernel":
+            if i.results == FAILURE:
+                return "failed"
+        if i.name == "Building modules":
+            if i.results == FAILURE:
+                return "failed"
+        if i.name == "Run Gentoo kernel tests":
+            if i.results == FAILURE:
+                return "failed"
+    return "success"
+
+@util.renderer
+def PatchStatus(props):
+    step = props.getBuild().executedSteps[-1]
+    for i in step.build.executedSteps:
+        if i.name == "Patching kernel":
+            if i.results == FAILURE:
+                return "failed"
+        if i.name == "Listing rejected files":
+            if i.results == FAILURE:
+                return "failed"
+    return "success"
+
+@util.renderer
+@defer.inlineCallbacks
+def stepLogsID(props):
+    step = props.getBuild().executedSteps[-1]
+    logs = yield step.master.data.get(('steps', step.stepid, 'logs'))
+    print(logs)
+    for l in logs:
+        print(l['logid'])
 
 def download_new_patch_and_build_kernel(version, arch):
     factory = util.BuildFactory()
@@ -20,6 +53,7 @@ def download_new_patch_and_build_kernel(version, arch):
                                  descriptionDone='Cleaned enviroment',
                                  name='Clean enviroment',
                                  command=["/bin/bash", "-c", "umask 022; rm -rf *"],
+                                 alwaysRun=True,
                                  logEnviron=False,
                                  timeout=2400))
 
@@ -32,6 +66,7 @@ def download_new_patch_and_build_kernel(version, arch):
     factory.addStep(steps.GitHub(name="Fetching Ghelper",
                                  repourl='https://github.com/GKernelCI/Ghelper.git',
                                  mode='incremental',
+                                 alwaysRun=True,
                                  alwaysUseLatest=True,
                                  logEnviron=False,
                                  workdir="build/ghelper", branch='master'))
@@ -46,7 +81,7 @@ def download_new_patch_and_build_kernel(version, arch):
 
     factory.addStep(steps.ShellCommand(name="Patching kernel",
                                        command=["/bin/bash", "patch-kernel.sh",
-                                                "-a", arch, "-k", version],
+                                                "-a", arch, "-k", version, stepLogsID],
                                        workdir="build/ghelper/",
                                        logEnviron=False,
                                        haltOnFailure=True))
@@ -82,7 +117,7 @@ def download_new_patch_and_build_kernel(version, arch):
     factory.addStep(steps.ShellCommand(name="Send report to KCIDB",
                                        command=["/bin/bash", "kcidb/sendtokcidb", version,
                                                 util.Property('buildername'), util.Property('buildnumber'),
-                                                BuildStatus, arch],
+                                                BuildStatus, arch, PatchStatus],
                                        logEnviron=False,
                                        alwaysRun=True,
                                        workdir="build/ghelper/", timeout=3600))
