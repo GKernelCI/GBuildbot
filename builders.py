@@ -11,12 +11,11 @@ from config.factory.images_builder import *
 from buildbot.plugins import *
 from buildbot.plugins import reporters, util
 from buildbot.process.properties import Interpolate
+from config.settings import branches_list
 import os
 
 builders = []
 architecture_testing_list = ['amd64']
-branches_list = ['5.10', '5.9', '5.4', '4.19',
-                 '4.14', '4.9', '4.4']
 
 for kernel_branch in branches_list:
     for arch in architecture_testing_list:
