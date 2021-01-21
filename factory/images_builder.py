@@ -57,6 +57,12 @@ def download_new_patch_and_build_kernel(version, arch):
                                  logEnviron=False,
                                  timeout=2400))
 
+    factory.addStep(step.SetPropertyFromCommand(
+                                 logEnviron=False,
+                                 name="date",
+                                 command="date --iso-8601=ns",
+                                 property="discoverytime"))
+
     factory.addStep(steps.GitHub(name="Fetching linux-patches",
                                  repourl='https://github.com/gentoo/linux-patches',
                                  mode='incremental',
@@ -117,7 +123,7 @@ def download_new_patch_and_build_kernel(version, arch):
     factory.addStep(steps.ShellCommand(name="Send report to KCIDB",
                                        command=["/bin/bash", "kcidb/sendtokcidb", version,
                                                 util.Property('buildername'), util.Property('buildnumber'),
-                                                BuildStatus, arch, PatchStatus],
+                                                BuildStatus, arch, PatchStatus, discoverytime],
                                        logEnviron=False,
                                        alwaysRun=True,
                                        workdir="build/ghelper/", timeout=3600))
