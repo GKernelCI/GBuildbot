@@ -6,6 +6,7 @@ from buildbot.schedulers.basic import AnyBranchScheduler, SingleBranchScheduler
 from buildbot.schedulers.forcesched import ForceScheduler
 from buildbot.plugins import reporters, util
 from buildbot.process.properties import Interpolate
+from config.settings import branches_list
 import os
 
 ####### SCHEDULERS
@@ -38,8 +39,6 @@ def eclass_change(change):
         return False
 
 architecture_testing_list = ['amd64']
-branches_list = ['5.10', '5.9', '5.4', '4.19',
-                 '4.14', '4.9', '4.4']
 
 def builderNames(branch):
     builders = set()
