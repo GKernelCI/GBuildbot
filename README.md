@@ -1,7 +1,7 @@
 # GKernelCI
 Automated build and testing for Gentoo Kernel packages and eclasses
 
-[![Build Status](https://travis-ci.org/aliceinwire/Gentoo_kernelCI.svg?branch=master)](https://travis-ci.org/aliceinwire/Gentoo_kernelCI)
+[![Build Status](https://travis-ci.com/GKernelCI/GBuildbot.svg?branch=master)](https://travis-ci.com/GKernelCI/GBuildbot)
 
 ## quick start
 
