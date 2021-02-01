@@ -70,12 +70,13 @@ def download_new_patch_and_build_kernel(version, arch):
                                  workdir="build/linux-patches", branch=version))
     
     factory.addStep(steps.GitHub(name="Fetching Ghelper",
-                                 repourl='https://github.com/GKernelCI/Ghelper.git',
+                                 repourl=os.getenv("GHELPER_REPOURL"),
+                                 branch=os.getenv("GHELPER_BRANCH"),
                                  mode='incremental',
                                  alwaysRun=True,
                                  alwaysUseLatest=True,
                                  logEnviron=False,
-                                 workdir="build/ghelper", branch='master'))
+                                 workdir="build/ghelper"))
 
     factory.addStep(steps.ShellCommand(name="Looking for new upstream release",
                                        command=["/usr/bin/python3",
@@ -159,11 +160,12 @@ def test_gentoo_sources():
                                  logEnviron=False,
                                  mode='incremental', workdir="build/gentoo", shallow=50))
     factory.addStep(steps.GitHub(name="Fetching Ghelper",
-                                 repourl='https://github.com/GKernelCI/Ghelper.git',
+                                 repourl=os.getenv("GHELPER_REPOURL"),
+                                 branch=os.getenv("GHELPER_BRANCH"),
                                  mode='incremental',
                                  logEnviron=False,
                                  alwaysUseLatest=True,
-                                 workdir="build/ghelper", branch='master'))
+                                 workdir="build/ghelper"))
     factory.addStep(steps.ShellCommand(name="Stabilizing package",
                                        command=filterFiles,
                                        logEnviron=False,
