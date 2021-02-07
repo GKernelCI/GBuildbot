@@ -136,7 +136,7 @@ def filterFiles(props):
     files = props.getBuild().allFiles()
     print(files)
     build_files = [s for s in files if "sys-kernel/" in s]
-    command = ["/usr/bin/python3", "stabilize-packages.py"]
+    command = ["/bin/bash", "docker_emerge.sh"]
     for file in build_files:
         command.append(file)
     print(str(command))
