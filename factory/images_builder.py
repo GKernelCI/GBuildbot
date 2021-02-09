@@ -99,7 +99,10 @@ def download_new_patch_and_build_kernel(version, arch):
                                        workdir="build/ghelper/"))
 
     factory.addStep(steps.ShellCommand(name="Building kernel",
-                                       command=["/bin/bash", "../build-kernel.sh", arch],
+                                       command=["/bin/bash", "../build-kernel.sh", arch,
+                                                util.Property('buildername'),
+                                                util.Property('buildnumber'),
+                                                "build/ghelper/linux-" + version + "/"],
                                        workdir="build/ghelper/linux-" + version + "/",
                                        logEnviron=False,
                                        haltOnFailure=True))
