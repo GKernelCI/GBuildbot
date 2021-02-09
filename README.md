@@ -1,14 +1,12 @@
 # GKernelCI
 Automated build and testing for Gentoo Kernel packages and eclasses
 
-[![Build Status](https://travis-ci.com/GKernelCI/GBuildbot.svg?branch=master)](https://travis-ci.com/GKernelCI/GBuildbot)
-
 ## quick start
 
-GKernelCI is currently working with [docker-compose](https://github.com/aliceinwire/GkernelCI_docker)
+GKernelCI is currently working with [docker-compose](https://github.com/GKernelCI/Gdocker)
 
 Clone GKernelCI_docker repository  
-`git clone https://github.com/aliceinwire/GkernelCI_docker`  
+`git clone --recursive https://github.com/GKernelCI/Gdocker`  
 Change the *docker-compose.yml* and start docker-compose   
 `docker-compose up -d`
 
@@ -36,4 +34,4 @@ If stabilizing a special feature variant, try to test relevant features.
 ## Code
 Any contribute is welcome
 
-Please check the [issues](https://github.com/gentoo/Gentoo_kernelCI/issues) for contributing
+Please check the [issues](https://github.com/GKernelCI/Gdocker/issues) for contributing
