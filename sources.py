@@ -8,11 +8,11 @@ sources = []
 #    branches=None,
 #    repo='linux-patches'))
 #
-#sources.append(changes.GitHubPullrequestPoller(
-#    owner='gentoo',
-#    branches=None,
-#    category='gentoo-pull',
-#    repo='gentoo'))
+sources.append(changes.GitHubPullrequestPoller(
+    owner='gentoo',
+    branches=None,
+    category='gentoo-pull',
+    repo='gentoo'))
 
 sources.append(changes.GitPoller(
     repourl='https://github.com/gentoo/gentoo.git',
