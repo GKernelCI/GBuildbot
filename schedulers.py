@@ -38,7 +38,7 @@ def eclass_change(change):
     else:
         return False
 
-architecture_testing_list = ['amd64']
+architecture_testing_list = ['amd64', 'arm64']
 
 def builderNames(branch):
     builders = set()

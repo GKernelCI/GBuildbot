@@ -15,7 +15,7 @@ from config.settings import branches_list
 import os
 
 builders = []
-architecture_testing_list = ['amd64']
+architecture_testing_list = ['amd64', 'arm64']
 
 for kernel_branch in branches_list:
     for arch in architecture_testing_list:
