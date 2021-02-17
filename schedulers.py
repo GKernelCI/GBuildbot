@@ -57,6 +57,11 @@ for branch in branches_list:
                                 change_filter=util.ChangeFilter(branch=branch),
                                 treeStableTimer=None,
                                 builderNames=builderNames(branch)))
+    for arch in architecture_testing_list:
+        schedulers.append(ForceScheduler(
+                                name="Force_%s_%s" % (branch.replace(".", "_"), arch),
+                                builderNames=["%s:%s" % (branch, arch)]
+                                ))
     # add a changefilter for the pull requests
     cf = util.ChangeFilter(category='pull', branch=branch)
     # but only those that are targeted for that branch
