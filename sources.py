@@ -3,11 +3,11 @@
 from buildbot.plugins import changes
 
 sources = []
-#sources.append(changes.GitHubPullrequestPoller(
-#    owner='GKernelCI',
-#    branches=None,
-#    repo='linux-patches'))
-#
+sources.append(changes.GitHubPullrequestPoller(
+    owner='GKernelCI',
+    branches=None,
+    repo='linux-patches'))
+
 sources.append(changes.GitHubPullrequestPoller(
     owner='gentoo',
     branches=None,
@@ -18,7 +18,7 @@ sources.append(changes.GitPoller(
     repourl='https://github.com/gentoo/gentoo.git',
     branches=True,
     category="gentoo-pull",
-    pollinterval=10))
+    pollinterval=300))
 
 sources.append(changes.GitPoller(
     repourl='https://github.com/GKernelCI/linux-patches.git',
