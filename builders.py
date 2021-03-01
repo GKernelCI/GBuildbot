@@ -20,8 +20,13 @@ architecture_testing_list = get_arches()
 for kernel_branch in branches_list:
     for arch in architecture_testing_list:
         for toolchain in arch["toolchain"]:
+            tags = []
+            tags.append(toolchain)
+            tags.append(arch["name"])
+            tags.append(kernel_branch)
             builders.append(
               util.BuilderConfig(name=kernel_branch + ':' + arch["name"] + ':' + toolchain,
+                                 tags=tags,
                                  workernames=[os.environ.get('WORKER_NAME')],
                         factory=download_new_patch_and_build_kernel(kernel_branch, arch["name"])))
 
