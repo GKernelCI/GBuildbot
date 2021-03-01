@@ -1,6 +1,6 @@
 architecture_testing_list:
- - amd64
- - arm
- - arm64
- - ppc64
- - sparc
+ - name: amd64
+ - name: arm
+ - name: arm64
+ - name: ppc64
+ - name: sparc
