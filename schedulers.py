@@ -44,7 +44,8 @@ def builderNames(branch):
     builders = set()
 
     for arch in architecture_testing_list:
-        builders.add(branch + ':' + arch["name"])
+        for toolchain in arch["toolchain"]:
+            builders.add(branch + ':' + arch["name"] + ':' + toolchain)
 
     return list(builders)
 
@@ -58,9 +59,10 @@ for branch in branches_list:
                                 treeStableTimer=None,
                                 builderNames=builderNames(branch)))
     for arch in architecture_testing_list:
-        schedulers.append(ForceScheduler(
-                                name="Force_%s_%s" % (branch.replace(".", "_"), arch["name"]),
-                                builderNames=["%s:%s" % (branch, arch["name"])]
+        for toolchain in arch["toolchain"]:
+            schedulers.append(ForceScheduler(
+                                name="Force_%s_%s_%s" % (branch.replace(".", "_"), arch["name"], toolchain),
+                                builderNames=["%s:%s:%s" % (branch, arch["name"], toolchain)]
                                 ))
     # add a changefilter for the pull requests
     cf = util.ChangeFilter(category='pull', branch=branch)
