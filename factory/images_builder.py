@@ -135,6 +135,14 @@ def download_new_patch_and_build_kernel(version, arch):
                                        logEnviron=False,
                                        alwaysRun=True,
                                        workdir="build/ghelper/", timeout=3600))
+    factory.addStep(steps.ShellCommand(description="Cleaning enviroment2",
+                                 descriptionDone='Cleaned environment',
+                                 name='Clean environment end',
+                                 command=["/bin/bash", "-c", "umask 022; rm -rf *"],
+                                 alwaysRun=True,
+                                 logEnviron=False,
+                                 timeout=2400))
+
     return factory
 
 
