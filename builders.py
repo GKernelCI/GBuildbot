@@ -11,7 +11,7 @@ from config.factory.images_builder import *
 from buildbot.plugins import *
 from buildbot.plugins import reporters, util
 from buildbot.process.properties import Interpolate
-from config.settings import branches_list, get_arches
+from config.settings import branches_list, get_arches, get_workers_for
 import os
 
 builders = []
@@ -27,21 +27,21 @@ for kernel_branch in branches_list:
             builders.append(
               util.BuilderConfig(name=kernel_branch + ':' + arch["name"] + ':' + toolchain["name"],
                                  tags=tags,
-                                 workernames=[os.environ.get('WORKER_NAME')],
+                                 workernames=get_workers_for(arch["name"], toolchain["name"]),
                         factory=download_new_patch_and_build_kernel(kernel_branch, arch["name"])))
 
 builders.append(
     util.BuilderConfig(name='gentoo_sources',
-                       workernames=[os.environ.get('WORKER_NAME')],
+                       workernames=get_workers_for("gentoo_sources", None),
                        factory=test_gentoo_sources()))
 
 builders.append(
     util.BuilderConfig(name='other_sources',
-                       workernames=[os.environ.get('WORKER_NAME')],
+                       workernames=get_workers_for("other_sources", None),
                        factory=test_gentoo_sources()))
 
 builders.append(
     util.BuilderConfig(name='eclass_change',
-                       workernames=[os.environ.get('WORKER_NAME')],
+                       workernames=get_workers_for("eclass_change", None),
                        factory=test_gentoo_sources()))
 
