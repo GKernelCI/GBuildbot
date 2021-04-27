@@ -4,7 +4,7 @@
 import yaml
 
 # Define branch to build
-branches_list = ['5.11', '5.10', '5.4', '4.19',
+branches_list = ['5.12','5.11', '5.10', '5.4', '4.19',
                  '4.14', '4.9', '4.4']
 
 def get_arches():
