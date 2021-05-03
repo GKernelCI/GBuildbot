@@ -5,7 +5,7 @@ from twisted.internet import defer
 from buildbot.plugins import reporters, util
 from buildbot.process.properties import Interpolate
 from buildbot.steps.shell import ShellCommand
-from buildbot.status.builder import SUCCESS, SKIPPED, FAILURE, WARNINGS
+from buildbot.process import results
 from buildbot.process.buildstep import LogLineObserver
 import re
 import pprint
@@ -16,13 +16,13 @@ def BuildStatus(props):
     step = props.getBuild().executedSteps[-1]
     for i in step.build.executedSteps:
         if i.name == "Building kernel":
-            if i.results == FAILURE:
+            if i.results == results.FAILURE:
                 return "failed"
         if i.name == "Building modules":
-            if i.results == FAILURE:
+            if i.results == results.FAILURE:
                 return "failed"
         if i.name == "Run Gentoo kernel tests":
-            if i.results == FAILURE:
+            if i.results == results.FAILURE:
                 return "failed"
     return "success"
 
@@ -31,10 +31,10 @@ def PatchStatus(props):
     step = props.getBuild().executedSteps[-1]
     for i in step.build.executedSteps:
         if i.name == "Patching kernel":
-            if i.results == FAILURE:
+            if i.results == results.FAILURE:
                 return "failed"
         if i.name == "Listing rejected files":
-            if i.results == FAILURE:
+            if i.results == results.FAILURE:
                 return "failed"
     return "success"
 
