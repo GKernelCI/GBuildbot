@@ -131,7 +131,7 @@ def download_new_patch_and_build_kernel(version, arch):
     factory.addStep(steps.ShellCommand(name="Send report to KCIDB",
                                        command=["/bin/bash", "kcidb/sendtokcidb", version,
                                                 util.Property('buildername'), util.Property('buildnumber'),
-                                                BuildStatus, arch, PatchStatus, util.Property('discoverytime')],
+                                                PatchStatus, arch, BuildStatus, util.Property('discoverytime')],
                                        logEnviron=False,
                                        alwaysRun=True,
                                        workdir="build/ghelper/", timeout=3600))
