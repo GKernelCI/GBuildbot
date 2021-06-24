@@ -64,7 +64,7 @@ def download_new_patch_and_build_kernel(version, arch):
                                  property="discoverytime"))
 
     factory.addStep(steps.GitHub(name="Fetching linux-patches",
-                                 repourl='https://github.com/gentoo/linux-patches',
+                                 repourl='https://anongit.gentoo.org/git/proj/linux-patches.git',
                                  mode='incremental',
                                  logEnviron=False,
                                  workdir="build/linux-patches", branch=version))
