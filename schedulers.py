@@ -4,6 +4,7 @@
 from buildbot.plugins import *
 from buildbot.schedulers.basic import AnyBranchScheduler, SingleBranchScheduler
 from buildbot.schedulers.forcesched import ForceScheduler
+from buildbot.scheduler import Try_Userpass
 from buildbot.plugins import reporters, util
 from buildbot.process.properties import Interpolate
 from config.settings import branches_list, get_arches
@@ -50,9 +51,14 @@ def builderNames(branch):
     return list(builders)
 
 schedulers = []
+builder_names = []
 
 
 for branch in branches_list:
+    # Get builder names for Try schedule
+    for i in range(len(builderNames(branch))):
+        builder_names.append(builderNames(branch)[i])
+
     schedulers.append(SingleBranchScheduler(
                                 name=branch,
                                 change_filter=util.ChangeFilter(branch=branch),
@@ -127,3 +133,15 @@ schedulers.append(SingleBranchScheduler(
 schedulers.append(ForceScheduler(
         name="force_eclass_change",
         builderNames=["eclass_change"]))
+
+# append static builder name
+builder_names.append('gentoo_sources')
+builder_names.append('other_sources')
+builder_names.append('eclass_change')
+
+# Add try schedule for buildbot try command
+schedulers.append(Try_Userpass(
+        name='try',
+        builderNames=builder_names,
+        port=5555,
+        userpass=[('Developer',os.environ.get('TRY_PASSWD'))]))
