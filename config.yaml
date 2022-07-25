@@ -2,16 +2,3 @@ architecture_testing_list:
  - name: amd64
    toolchain:
    - name: gcc
-   - name: clang
- - name: arm
-   toolchain:
-   - name: gcc
- - name: arm64
-   toolchain:
-   - name: gcc
- - name: ppc64
-   toolchain:
-   - name: gcc
- - name: sparc
-   toolchain:
-   - name: gcc
