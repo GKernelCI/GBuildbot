@@ -15,6 +15,7 @@ import os
 # Configure the Schedulers, which decide how to react to incoming changes.
 # In this case, just kick off a 'runtests' build
 
+# looks for gentoo-sources changes
 def change_files_json_push(change):
     print("Change111: "+str(change.files))
     if any("sys-kernel/gentoo-sources" in s for s in change.files):
@@ -23,14 +24,20 @@ def change_files_json_push(change):
     else:
         return False
 
+# looks for sys-kernel changes but excluding gentoo-sources
 def syskernel_change(change):
     print("Change111: "+str(change.files))
-    if any("sys-kernel/" in s for s in change.files):
-        print("sys-kernel ebuild to test")
+    syskernel_package_found=False
+    for package in change.files:
+        if "sys-kernel/" in package:
+            if "sys-kernel/gentoo-sources" not in package:
+                syskernel_package_found = True
+    if syskernel_package_found == True:
         return True
     else:
         return False
 
+# looks for eclass/kernel-2.eclass changes only
 def eclass_change(change):
     print("Change111: "+str(change.files))
     if any("eclass/kernel-2.eclass" in s for s in change.files):
