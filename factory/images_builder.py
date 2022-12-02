@@ -151,7 +151,7 @@ def filterFiles(props):
     files = props.getBuild().allFiles()
     print(files)
     build_files = [s for s in files if "sys-kernel/" in s]
-    command = ["/bin/bash", "docker_emerge.sh"]
+    command = ["/bin/bash", "docker_emerge.sh", util.Property('discoverytime')]
     for file in build_files:
         command.append(file)
     print(str(command))
@@ -170,6 +170,11 @@ def test_gentoo_sources():
                                  command=["/bin/bash", "-c", "umask 022; rm -rf *"],
                                  logEnviron=False,
                                  timeout=2400))
+    factory.addStep(steps.SetPropertyFromCommand(
+                                 logEnviron=False,
+                                 name="date",
+                                 command="date --iso-8601=ns",
+                                 property="discoverytime"))
     factory.addStep(steps.GitHub(name="Fetching repository",
                                  repourl=pull_repourl,
                                  logEnviron=False,
@@ -185,5 +190,11 @@ def test_gentoo_sources():
                                        command=filterFiles,
                                        logEnviron=False,
                                        workdir="build/ghelper/"))
+    factory.addStep(steps.ShellCommand(description="Cleaning enviroment",
+                                 descriptionDone='Cleaned enviroment',
+                                 name='Clean enviroment',
+                                 command=["/bin/bash", "-c", "umask 022; rm -rf *"],
+                                 logEnviron=False,
+                                 timeout=2400))
     return factory
 
