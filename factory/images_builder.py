@@ -142,7 +142,6 @@ def download_new_patch_and_build_kernel(version, arch):
                                  alwaysRun=True,
                                  logEnviron=False,
                                  timeout=2400))
-
     return factory
 
 
@@ -186,10 +185,18 @@ def test_gentoo_sources():
                                  logEnviron=False,
                                  alwaysUseLatest=True,
                                  workdir="build/ghelper"))
-    factory.addStep(steps.ShellCommand(name="Stabilizing package",
-                                       command=filterFiles,
-                                       logEnviron=False,
-                                       workdir="build/ghelper/"))
+    factory.addStep(steps.ShellCommand(name="Building package",
+                                 command=filterFiles,
+                                 logEnviron=False,
+                                 workdir="build/ghelper/"))
+    factory.addStep(steps.ShellCommand(name="Stabilize package",
+                                 command=["/bin/bash", "run_stabilization.sh",
+                                          "x86_64",
+                                          util.Property('buildername'),
+                                          util.Property('buildnumber'),
+                                          util.Property('discoverytime')],
+                                 logEnviron=False,
+                                 workdir="build/ghelper/", timeout=3600))
     factory.addStep(steps.ShellCommand(description="Cleaning enviroment",
                                  descriptionDone='Cleaned enviroment',
                                  name='Clean enviroment',
