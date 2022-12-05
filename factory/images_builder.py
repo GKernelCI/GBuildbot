@@ -152,7 +152,28 @@ def filterFiles(props):
     build_files = [s for s in files if "sys-kernel/" in s]
     command = ["/bin/bash", "docker_emerge.sh", util.Property('discoverytime')]
     for file in build_files:
-        command.append(file)
+        if ".ebuild" in file: 
+            if "sources" in file: 
+                command.append(file)
+    print(str(command))
+    return command
+
+@util.renderer
+def run_stabilization_files(props):
+    files = props.getBuild().allFiles()
+    print(files)
+    build_files = [s for s in files if "sys-kernel/" in s]
+    command = ["/bin/bash", 
+               "run_stabilization.sh", 
+               "x86_64",
+               util.Property('buildername'),
+               util.Property('buildnumber'),
+               util.Property('discoverytime')
+               ]
+    for file in build_files:
+        if ".ebuild" in file: 
+            if "sources" in file: 
+                command.append(file)
     print(str(command))
     return command
 
@@ -190,11 +211,7 @@ def test_gentoo_sources():
                                  logEnviron=False,
                                  workdir="build/ghelper/"))
     factory.addStep(steps.ShellCommand(name="Stabilize package",
-                                 command=["/bin/bash", "run_stabilization.sh",
-                                          "x86_64",
-                                          util.Property('buildername'),
-                                          util.Property('buildnumber'),
-                                          util.Property('discoverytime')],
+                                 command=run_stabilization_files,
                                  logEnviron=False,
                                  workdir="build/ghelper/", timeout=3600))
     factory.addStep(steps.ShellCommand(description="Cleaning enviroment",
