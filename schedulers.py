@@ -110,10 +110,10 @@ for branch in branches_list:
         treeStableTimer=None,
         builderNames=builderNames(branch)))
 
-gpcf = util.ChangeFilter(category='gentoo-pull', filter_fn=change_files_json_push)
 for arch in architecture_stabilization_list:
+    gpcf = util.ChangeFilter(category='gentoo-pull', filter_fn=change_files_json_push)
     schedulers.append(SingleBranchScheduler(
-            name="gentoo_sources",
+            name="gentoo_sources"+":"+ arch['name'],
             change_filter=gpcf,
             treeStableTimer=None,
             builderNames=["gentoo_sources"+":"+ arch['name']]))
