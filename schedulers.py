@@ -117,6 +117,7 @@ for arch in architecture_stabilization_list:
             change_filter=gpcf,
             treeStableTimer=None,
             builderNames=["gentoo_sources"+":"+ arch['name']]))
+    builder_names.append('gentoo_sources'+":"+ arch['name'])
 
 gpcf = util.ChangeFilter(category='gentoo-pull', filter_fn=syskernel_change)
 schedulers.append(SingleBranchScheduler(
@@ -133,7 +134,6 @@ schedulers.append(SingleBranchScheduler(
         builderNames=["eclass_change"]))
 
 # append static builder name
-builder_names.append('gentoo_sources')
 builder_names.append('other_sources')
 builder_names.append('eclass_change')
 
