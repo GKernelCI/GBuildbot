@@ -7,7 +7,7 @@ from buildbot.schedulers.forcesched import ForceScheduler
 from buildbot.scheduler import Try_Userpass
 from buildbot.plugins import reporters, util
 from buildbot.process.properties import Interpolate
-from config.settings import branches_list, get_arches
+from config.settings import branches_list, get_arches, get_arches_stabilization
 import os
 
 ####### SCHEDULERS
@@ -51,6 +51,7 @@ def eclass_change(change):
         return False
 
 architecture_testing_list = get_arches()
+architecture_stabilization_list = get_arches_stabilization()
 
 def builderNames(branch):
     builders = set()
@@ -75,12 +76,6 @@ for branch in branches_list:
                                 change_filter=util.ChangeFilter(branch=branch),
                                 treeStableTimer=None,
                                 builderNames=builderNames(branch)))
-    for arch in architecture_testing_list:
-        for toolchain in arch["toolchain"]:
-            schedulers.append(ForceScheduler(
-                                name="Force_%s_%s_%s" % (branch.replace(".", "_"), arch["name"], toolchain["name"]),
-                                builderNames=["%s:%s:%s" % (branch, arch["name"], toolchain["name"])]
-                                ))
     # add a changefilter for the pull requests
     cf = util.ChangeFilter(category='pull', branch=branch)
     # but only those that are targeted for that branch
@@ -116,14 +111,12 @@ for branch in branches_list:
         builderNames=builderNames(branch)))
 
 gpcf = util.ChangeFilter(category='gentoo-pull', filter_fn=change_files_json_push)
-schedulers.append(SingleBranchScheduler(
-        name="gentoo_sources",
-        change_filter=gpcf,
-        treeStableTimer=None,
-        builderNames=["gentoo_sources"]))
-schedulers.append(ForceScheduler(
-        name="force_gentoo_sources",
-        builderNames=["gentoo_sources"]))
+for arch in architecture_stabilization_list:
+    schedulers.append(SingleBranchScheduler(
+            name="gentoo_sources",
+            change_filter=gpcf,
+            treeStableTimer=None,
+            builderNames=["gentoo_sources"+":"+ arch]))
 
 gpcf = util.ChangeFilter(category='gentoo-pull', filter_fn=syskernel_change)
 schedulers.append(SingleBranchScheduler(
@@ -131,18 +124,12 @@ schedulers.append(SingleBranchScheduler(
         change_filter=gpcf,
         treeStableTimer=None,
         builderNames=["other_sources"]))
-schedulers.append(ForceScheduler(
-        name="force_other_sources",
-        builderNames=["other_sources"]))
 
 gpcf = util.ChangeFilter(category='gentoo-pull', filter_fn=eclass_change)
 schedulers.append(SingleBranchScheduler(
         name="eclass_change",
         change_filter=gpcf,
         treeStableTimer=None,
-        builderNames=["eclass_change"]))
-schedulers.append(ForceScheduler(
-        name="force_eclass_change",
         builderNames=["eclass_change"]))
 
 # append static builder name
