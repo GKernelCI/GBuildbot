@@ -119,12 +119,14 @@ for arch in architecture_stabilization_list:
             builderNames=["gentoo_sources"+":"+ arch['name']]))
     builder_names.append('gentoo_sources'+":"+ arch['name'])
 
-gpcf = util.ChangeFilter(category='gentoo-pull', filter_fn=syskernel_change)
-schedulers.append(SingleBranchScheduler(
-        name="other_sources",
-        change_filter=gpcf,
-        treeStableTimer=None,
-        builderNames=["other_sources"]))
+for arch in architecture_stabilization_list:
+    gpcf = util.ChangeFilter(category='gentoo-pull', filter_fn=syskernel_change)
+    schedulers.append(SingleBranchScheduler(
+            name="other_sources"+":"+ arch['name'],
+            change_filter=gpcf,
+            treeStableTimer=None,
+            builderNames=["other_sources"+":"+ arch['name']]))
+    builder_names.append('other_sources'+":"+ arch['name'])
 
 gpcf = util.ChangeFilter(category='gentoo-pull', filter_fn=eclass_change)
 schedulers.append(SingleBranchScheduler(
@@ -134,7 +136,6 @@ schedulers.append(SingleBranchScheduler(
         builderNames=["eclass_change"]))
 
 # append static builder name
-builder_names.append('other_sources')
 builder_names.append('eclass_change')
 
 # Add try schedule for buildbot try command
