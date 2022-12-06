@@ -31,7 +31,7 @@ for kernel_branch in branches_list:
                                  workernames=get_workers_for(arch["name"], toolchain["name"]),
                         factory=download_new_patch_and_build_kernel(kernel_branch, arch["name"])))
 
-for arch in architecture_testing_list:
+for arch in architecture_stabilization_list:
     builders.append(
         util.BuilderConfig(name='gentoo_sources' + ':' + arch["name"],
                            workernames=get_workers_for("gentoo_sources", None),
