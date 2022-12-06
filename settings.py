@@ -21,6 +21,11 @@ def get_arches():
     architecture_testing_list = config["architecture_testing_list"]
     return architecture_testing_list
 
+def get_arches_stabilization():
+    config = yaml.safe_load(open("config/config_stabilization.yaml"))
+    architecture_stabilization_list = config["architecture_stabilization_list"]
+    return architecture_stabilization_list
+
 # get a list of all workers
 def get_workers():
     try:

@@ -11,11 +11,12 @@ from config.factory.images_builder import *
 from buildbot.plugins import *
 from buildbot.plugins import reporters, util
 from buildbot.process.properties import Interpolate
-from config.settings import branches_list, get_arches, get_workers_for
+from config.settings import branches_list, get_arches, get_arches_stabilization ,get_workers_for
 import os
 
 builders = []
 architecture_testing_list = get_arches()
+architecture_stabilization_list = get_arches_stabilization()
 
 for kernel_branch in branches_list:
     for arch in architecture_testing_list:
@@ -30,10 +31,11 @@ for kernel_branch in branches_list:
                                  workernames=get_workers_for(arch["name"], toolchain["name"]),
                         factory=download_new_patch_and_build_kernel(kernel_branch, arch["name"])))
 
-builders.append(
-    util.BuilderConfig(name='gentoo_sources',
-                       workernames=get_workers_for("gentoo_sources", None),
-                       factory=test_gentoo_sources()))
+for arch in architecture_testing_list:
+    builders.append(
+        util.BuilderConfig(name='gentoo_sources' + ':' + arch["name"],
+                           workernames=get_workers_for("gentoo_sources", None),
+                           factory=test_gentoo_sources()))
 
 builders.append(
     util.BuilderConfig(name='other_sources',
