@@ -37,10 +37,11 @@ for arch in architecture_stabilization_list:
                            workernames=get_workers_for("gentoo_sources", None),
                            factory=test_gentoo_sources()))
 
-builders.append(
-    util.BuilderConfig(name='other_sources',
-                       workernames=get_workers_for("other_sources", None),
-                       factory=test_gentoo_sources()))
+for arch in architecture_stabilization_list:
+    builders.append(
+        util.BuilderConfig(name='other_sources' + ':' + arch["name"],
+                           workernames=get_workers_for("other_sources", None),
+                           factory=test_gentoo_sources()))
 
 builders.append(
     util.BuilderConfig(name='eclass_change',
