@@ -196,8 +196,6 @@ def test_gentoo_sources(arch):
                                  command="date --iso-8601=ns",
                                  property="discoverytime"))
     factory.addStep(steps.SetProperty(
-                                 logEnviron=False,
-                                 name="set arch",
                                  property="arch",
                                  value=arch))
     factory.addStep(steps.GitHub(name="Fetching repository",
