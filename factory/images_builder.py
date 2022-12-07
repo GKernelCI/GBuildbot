@@ -227,11 +227,11 @@ def test_gentoo_sources(arch):
                                  logEnviron=False,
                                  alwaysUseLatest=True,
                                  workdir="build/ghelper"))
-    factory.addStep(steps.ShellCommand(name="Building "+util.Property["package_name"],
+    factory.addStep(steps.ShellCommand(name=Interpolate("Building %(prop:package_name)s"),
                                  command=filterFiles,
                                  logEnviron=False,
                                  workdir="build/ghelper/"))
-    factory.addStep(steps.ShellCommand(name="Stabilize "+util.Property["package_name"],
+    factory.addStep(steps.ShellCommand(name=Interpolate("Stabilize %(prop:package_name)s"),
                                  command=run_stabilization_files,
                                  logEnviron=False,
                                  workdir="build/ghelper/", timeout=3600))
