@@ -41,7 +41,7 @@ for arch in architecture_stabilization_list:
     builders.append(
         util.BuilderConfig(name='other_sources' + ':' + arch["name"],
                            workernames=get_workers_for("other_sources", None),
-                           factory=test_source_pacakges(arch["name"])))
+                           factory=test_source_packages(arch["name"])))
 
 builders.append(
     util.BuilderConfig(name='eclass_change',
