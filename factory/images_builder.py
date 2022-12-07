@@ -182,6 +182,17 @@ def run_stabilization_files(props):
     return command
 
 @util.renderer
+def get_package_name(props):
+    files = props.getBuild().allFiles()
+    build_files = [s for s in files if "sys-kernel/" in s]
+    for package in build_files:
+        if ".ebuild" in package: 
+            if "sources" in package: 
+                return package.split("/")[1]
+    return "None"
+    
+
+@util.renderer
 def pull_repourl(props):
     pull_repourl = props.getProperty('repository')
     return pull_repourl
@@ -202,6 +213,9 @@ def test_gentoo_sources(arch):
     factory.addStep(steps.SetProperty(
                                  property="arch",
                                  value=arch))
+    factory.addStep(steps.SetProperty(
+                                 property="package_name",
+                                 value=get_package_name))
     factory.addStep(steps.GitHub(name="Fetching repository",
                                  repourl=pull_repourl,
                                  logEnviron=False,
@@ -213,11 +227,11 @@ def test_gentoo_sources(arch):
                                  logEnviron=False,
                                  alwaysUseLatest=True,
                                  workdir="build/ghelper"))
-    factory.addStep(steps.ShellCommand(name="Building package",
+    factory.addStep(steps.ShellCommand(name="Building "+util.Property["package_name"],
                                  command=filterFiles,
                                  logEnviron=False,
                                  workdir="build/ghelper/"))
-    factory.addStep(steps.ShellCommand(name="Stabilize package",
+    factory.addStep(steps.ShellCommand(name="Stabilize "+util.Property["package_name"],
                                  command=run_stabilization_files,
                                  logEnviron=False,
                                  workdir="build/ghelper/", timeout=3600))
