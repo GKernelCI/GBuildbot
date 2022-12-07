@@ -202,7 +202,8 @@ def get_package_versions(props):
                 package_filename=package.split("/")[2]
                 package_version=package_filename.split(".ebuild")[0]
                 package_versions_list.append(package_version)
-    return str(package_versions_list)
+    package_versions_string=" ".join(str(package) for package in package_versions_list)
+    return package_versions_string
     
 
 @util.renderer
@@ -243,11 +244,11 @@ def test_gentoo_sources(arch):
                                  logEnviron=False,
                                  alwaysUseLatest=True,
                                  workdir="build/ghelper"))
-    factory.addStep(steps.ShellCommand(name=Interpolate("Building %(prop:package_name)s"),
+    factory.addStep(steps.ShellCommand(name=Interpolate("Building %(prop:package_versions)s"),
                                  command=filterFiles,
                                  logEnviron=False,
                                  workdir="build/ghelper/"))
-    factory.addStep(steps.ShellCommand(name=Interpolate("Stabilize %(prop:package_name)s"),
+    factory.addStep(steps.ShellCommand(name=Interpolate("Stabilize %(prop:package_versions)s"),
                                  command=run_stabilization_files,
                                  logEnviron=False,
                                  workdir="build/ghelper/", timeout=3600))
