@@ -190,6 +190,19 @@ def get_package_name(props):
             if "sources" in package: 
                 return package.split("/")[1]
     return "None"
+
+@util.renderer
+def get_package_versions(props):
+    files = props.getBuild().allFiles()
+    build_files = [s for s in files if "sys-kernel/" in s]
+    package_versions_list=[]
+    for package in build_files:
+        if ".ebuild" in package: 
+            if "sources" in package: 
+                package_filename=package.split("/")[2]
+                package_version=package_filename.split(".ebuild")[0]
+                package_versions_list.append(package_version)
+    return str(package_versions_list)
     
 
 @util.renderer
@@ -216,6 +229,9 @@ def test_gentoo_sources(arch):
     factory.addStep(steps.SetProperty(
                                  property="package_name",
                                  value=get_package_name))
+    factory.addStep(steps.SetProperty(
+                                 property="package_versions",
+                                 value=get_package_versions))
     factory.addStep(steps.GitHub(name="Fetching repository",
                                  repourl=pull_repourl,
                                  logEnviron=False,
