@@ -150,7 +150,11 @@ def filterFiles(props):
     files = props.getBuild().allFiles()
     print(files)
     build_files = [s for s in files if "sys-kernel/" in s]
-    command = ["/bin/bash", "docker_emerge.sh", util.Property('discoverytime')]
+    command = ["/bin/bash",
+               "docker_emerge.sh",
+               util.Property('arch'),
+               util.Property('discoverytime')
+               ]
     for file in build_files:
         if ".ebuild" in file: 
             if "sources" in file: 
