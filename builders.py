@@ -35,16 +35,16 @@ for arch in architecture_stabilization_list:
     builders.append(
         util.BuilderConfig(name='gentoo_sources' + ':' + arch["name"],
                            workernames=get_workers_for("gentoo_sources", None),
-                           factory=test_gentoo_sources()))
+                           factory=test_gentoo_sources(arch["name"])))
 
 for arch in architecture_stabilization_list:
     builders.append(
         util.BuilderConfig(name='other_sources' + ':' + arch["name"],
                            workernames=get_workers_for("other_sources", None),
-                           factory=test_gentoo_sources()))
+                           factory=test_gentoo_sources(arch["name"])))
 
 builders.append(
     util.BuilderConfig(name='eclass_change',
                        workernames=get_workers_for("eclass_change", None),
-                       factory=test_gentoo_sources()))
+                       factory=test_gentoo_sources("x86_64")))
 

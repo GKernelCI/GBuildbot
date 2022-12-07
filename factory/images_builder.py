@@ -165,7 +165,7 @@ def run_stabilization_files(props):
     build_files = [s for s in files if "sys-kernel/" in s]
     command = ["/bin/bash", 
                "run_stabilization.sh", 
-               "x86_64",
+               util.Property('arch'),
                util.Property('buildername'),
                util.Property('buildnumber'),
                util.Property('discoverytime')
@@ -182,7 +182,7 @@ def pull_repourl(props):
     pull_repourl = props.getProperty('repository')
     return pull_repourl
 
-def test_gentoo_sources():
+def test_gentoo_sources(arch):
     factory = util.BuildFactory()
     factory.addStep(steps.ShellCommand(description="Cleaning enviroment",
                                  descriptionDone='Cleaned enviroment',
@@ -192,9 +192,14 @@ def test_gentoo_sources():
                                  timeout=2400))
     factory.addStep(steps.SetPropertyFromCommand(
                                  logEnviron=False,
-                                 name="date",
+                                 name="set date",
                                  command="date --iso-8601=ns",
                                  property="discoverytime"))
+    factory.addStep(steps.SetProperty(
+                                 logEnviron=False,
+                                 name="set arch",
+                                 property="arch",
+                                 value=arch))
     factory.addStep(steps.GitHub(name="Fetching repository",
                                  repourl=pull_repourl,
                                  logEnviron=False,
