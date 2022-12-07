@@ -29,22 +29,22 @@ for kernel_branch in branches_list:
               util.BuilderConfig(name=kernel_branch + ':' + arch["name"] + ':' + toolchain["name"],
                                  tags=tags,
                                  workernames=get_workers_for(arch["name"], toolchain["name"]),
-                        factory=download_new_patch_and_build_kernel(kernel_branch, arch["name"])))
+                        factory=test_linux_patches(kernel_branch, arch["name"])))
 
 for arch in architecture_stabilization_list:
     builders.append(
         util.BuilderConfig(name='gentoo_sources' + ':' + arch["name"],
                            workernames=get_workers_for("gentoo_sources", None),
-                           factory=test_gentoo_sources(arch["name"])))
+                           factory=test_source_packages(arch["name"])))
 
 for arch in architecture_stabilization_list:
     builders.append(
         util.BuilderConfig(name='other_sources' + ':' + arch["name"],
                            workernames=get_workers_for("other_sources", None),
-                           factory=test_gentoo_sources(arch["name"])))
+                           factory=test_source_pacakges(arch["name"])))
 
 builders.append(
     util.BuilderConfig(name='eclass_change',
                        workernames=get_workers_for("eclass_change", None),
-                       factory=test_gentoo_sources("x86_64")))
+                       factory=test_eclass_changes("x86_64")))
 

@@ -47,7 +47,7 @@ def stepLogsID(props):
     for l in logs:
         print(l['logid'])
 
-def download_new_patch_and_build_kernel(version, arch):
+def test_linux_patches(version, arch):
     factory = util.BuildFactory()
     factory.addStep(steps.ShellCommand(description="Cleaning enviroment",
                                  descriptionDone='Cleaned enviroment',
@@ -211,7 +211,7 @@ def pull_repourl(props):
     pull_repourl = props.getProperty('repository')
     return pull_repourl
 
-def test_gentoo_sources(arch):
+def test_source_packages(arch):
     factory = util.BuildFactory()
     factory.addStep(steps.ShellCommand(description="Cleaning enviroment",
                                  descriptionDone='Cleaned enviroment',
@@ -249,6 +249,49 @@ def test_gentoo_sources(arch):
                                  logEnviron=False,
                                  workdir="build/ghelper/"))
     factory.addStep(steps.ShellCommand(name=Interpolate("Stabilize %(prop:package_versions)s"),
+                                 command=run_stabilization_files,
+                                 logEnviron=False,
+                                 workdir="build/ghelper/", timeout=3600))
+    factory.addStep(steps.ShellCommand(description="Cleaning enviroment",
+                                 descriptionDone='Cleaned enviroment',
+                                 name='Clean enviroment',
+                                 command=["/bin/bash", "-c", "umask 022; rm -rf *"],
+                                 logEnviron=False,
+                                 timeout=2400))
+    return factory
+
+def test_eclass_changes(arch):
+    factory = util.BuildFactory()
+    factory.addStep(steps.ShellCommand(description="Cleaning enviroment",
+                                 descriptionDone='Cleaned enviroment',
+                                 name='Clean enviroment',
+                                 command=["/bin/bash", "-c", "umask 022; rm -rf *"],
+                                 logEnviron=False,
+                                 timeout=2400))
+    factory.addStep(steps.SetPropertyFromCommand(
+                                 logEnviron=False,
+                                 name="set date",
+                                 command="date --iso-8601=ns",
+                                 property="discoverytime"))
+    factory.addStep(steps.SetProperty(
+                                 property="arch",
+                                 value=arch))
+    factory.addStep(steps.GitHub(name="Fetching repository",
+                                 repourl=pull_repourl,
+                                 logEnviron=False,
+                                 mode='incremental', workdir="build/gentoo", shallow=50))
+    factory.addStep(steps.GitHub(name="Fetching Ghelper",
+                                 repourl=os.getenv("GHELPER_REPOURL"),
+                                 branch=os.getenv("GHELPER_BRANCH"),
+                                 mode='incremental',
+                                 logEnviron=False,
+                                 alwaysUseLatest=True,
+                                 workdir="build/ghelper"))
+    factory.addStep(steps.ShellCommand(name=Interpolate("Building kernel-2.eclass"),
+                                 command=filterFiles,
+                                 logEnviron=False,
+                                 workdir="build/ghelper/"))
+    factory.addStep(steps.ShellCommand(name=Interpolate("Stabilize kernel-2.eclass"),
                                  command=run_stabilization_files,
                                  logEnviron=False,
                                  workdir="build/ghelper/", timeout=3600))
