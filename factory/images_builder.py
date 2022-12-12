@@ -99,7 +99,7 @@ def test_linux_patches(version, arch):
                                        workdir="build/ghelper/"))
 
     factory.addStep(steps.ShellCommand(name="Building kernel",
-                                       command=["/bin/bash", "../build-kernel.sh", arch,
+                                       command=["/bin/bash", "build-kernel.sh", arch,
                                                 util.Property('buildername'),
                                                 util.Property('buildnumber')
                                                 ],
@@ -108,7 +108,7 @@ def test_linux_patches(version, arch):
                                        haltOnFailure=True))
 
     factory.addStep(steps.ShellCommand(name="Building modules",
-                                       command=["/bin/bash", "../build-kernel.sh", arch,
+                                       command=["/bin/bash", "build-kernel.sh", arch,
                                                 util.Property('buildername'),
                                                 util.Property('buildnumber'),
                                                 "modules"
