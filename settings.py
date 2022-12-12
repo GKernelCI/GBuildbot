@@ -5,9 +5,9 @@ import yaml
 
 # Define branch to build
 branches_list = [
+    '6.2',
     '6.1',
     '6.0',
-    '5.19',
     '5.15', 
     '5.10', 
     '5.4', 
