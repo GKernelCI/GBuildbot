@@ -14,9 +14,3 @@ architecture_stabilization_list:
  - name: ppc64le
    toolchain:
    - name: gcc
- - name: riscv64
-   toolchain:
-   - name: gcc
- - name: s390x
-   toolchain:
-   - name: gcc
