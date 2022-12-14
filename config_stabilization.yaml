@@ -11,6 +11,3 @@ architecture_stabilization_list:
  - name: arm64
    toolchain:
    - name: gcc
- - name: ppc64le
-   toolchain:
-   - name: gcc
