@@ -182,6 +182,21 @@ def run_stabilization_files(props):
     return command
 
 @util.renderer
+def do_exist_command(props):
+    files = props.getBuild().allFiles()
+    print(files)
+    build_files = [s for s in files if "sys-kernel/" in s]
+    command = ["/bin/bash", 
+               "do_package_exist.sh", 
+               ]
+    for file in build_files:
+        if ".ebuild" in file: 
+            if "sources" in file: 
+                command.append(file)
+    print(str(command))
+    return command
+
+@util.renderer
 def get_package_name(props):
     files = props.getBuild().allFiles()
     build_files = [s for s in files if "sys-kernel/" in s]
@@ -205,6 +220,11 @@ def get_package_versions(props):
     package_versions_string=" ".join(str(package) for package in package_versions_list)
     return package_versions_string
     
+@util.renderer
+def fn_do_exist(props):
+    if props.getProperty('do_exist') == "False":
+        return False
+    return True
 
 @util.renderer
 def pull_repourl(props):
@@ -218,6 +238,7 @@ def test_source_packages(arch):
                                  name='Clean enviroment',
                                  command=["/bin/bash", "-c", "umask 022; rm -rf *"],
                                  logEnviron=False,
+                                 alwaysRun=True,
                                  timeout=2400))
     factory.addStep(steps.SetPropertyFromCommand(
                                  logEnviron=False,
@@ -244,18 +265,28 @@ def test_source_packages(arch):
                                  logEnviron=False,
                                  alwaysUseLatest=True,
                                  workdir="build/ghelper"))
+    factory.addStep(steps.SetPropertyFromCommand(
+                                 logEnviron=False,
+                                 name=Interpolate("Check %(prop:package_versions)s"),
+                                 command=do_exist_command,
+                                 property="do_exist",
+                                 workdir="build/ghelper/"))
     factory.addStep(steps.ShellCommand(name=Interpolate("Building %(prop:package_versions)s"),
                                  command=filterFiles,
                                  logEnviron=False,
+                                 doStepIf=fn_do_exist,
                                  workdir="build/ghelper/"))
     factory.addStep(steps.ShellCommand(name=Interpolate("Stabilize %(prop:package_versions)s"),
                                  command=run_stabilization_files,
                                  logEnviron=False,
-                                 workdir="build/ghelper/", timeout=3600))
+                                 doStepIf=fn_do_exist,
+                                 workdir="build/ghelper/", 
+                                 timeout=3600))
     factory.addStep(steps.ShellCommand(description="Cleaning enviroment",
                                  descriptionDone='Cleaned enviroment',
                                  name='Clean enviroment',
                                  command=["/bin/bash", "-c", "umask 022; rm -rf *"],
+                                 alwaysRun=True,
                                  logEnviron=False,
                                  timeout=2400))
     return factory
