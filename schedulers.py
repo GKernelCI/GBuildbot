@@ -81,19 +81,6 @@ for branch in branches_list:
             builderNames=builderNames(branch),
         )
     )
-    # add a changefilter for the pull requests
-    cf = util.ChangeFilter(category="pull", branch=branch)
-    # but only those that are targeted for that branch
-    cf.checks["prop:github.base.ref"] = cf.checks["branch"]
-    del cf.checks["branch"]
-    schedulers.append(
-        SingleBranchScheduler(
-            name="pull" + branch,
-            change_filter=cf,
-            treeStableTimer=None,
-            builderNames=builderNames(branch),
-        )
-    )
 
     stab_cf = util.ChangeFilter(category="pull", branch=branch)
     schedulers.append(

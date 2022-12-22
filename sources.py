@@ -5,7 +5,10 @@ from buildbot.plugins import changes
 sources = []
 sources.append(
     changes.GitHubPullrequestPoller(
-        owner="gentoo", branches=None, category="gentoo-pull", repo="gentoo"
+        owner="gentoo",
+        branches=None,
+        category="gentoo-pull",
+        repo="gentoo",
     )
 )
 
