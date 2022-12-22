@@ -21,8 +21,6 @@ def change_files_json_push(change):
     if any("sys-kernel/gentoo-sources" in s for s in change.files):
         print("sys-kernel ebuild to test")
         return True
-    else:
-        return False
 
 # looks for sys-kernel changes but excluding gentoo-sources
 def syskernel_change(change):
@@ -38,8 +36,6 @@ def syskernel_change(change):
                                 syskernel_package_found = True
     if syskernel_package_found == True:
         return True
-    else:
-        return False
 
 # looks for eclass/kernel-2.eclass changes only
 def eclass_change(change):
@@ -47,8 +43,6 @@ def eclass_change(change):
     if any("eclass/kernel-2.eclass" in s for s in change.files):
         print("sys-kernel ebuild to test")
         return True
-    else:
-        return False
 
 architecture_testing_list = get_arches()
 architecture_stabilization_list = get_arches_stabilization()
