@@ -104,25 +104,21 @@ for branch in branches_list:
         treeStableTimer=None,
         builderNames=builderNames(branch)))
 
+gpcf = util.ChangeFilter(category='gentoo-pull', filter_fn=change_files_json_push)
 for arch in architecture_stabilization_list:
-    gpcf = util.ChangeFilter(category='gentoo-pull', filter_fn=change_files_json_push)
     schedulers.append(SingleBranchScheduler(
             name="gentoo_sources"+":"+ arch['name'],
             change_filter=gpcf,
             treeStableTimer=None,
             builderNames=["gentoo_sources"+":"+ arch['name']]))
-    builder_names.append('gentoo_sources'+":"+ arch['name'])
-
-for arch in architecture_stabilization_list:
-    gpcf = util.ChangeFilter(category='gentoo-pull', filter_fn=syskernel_change)
     schedulers.append(SingleBranchScheduler(
             name="other_sources"+":"+ arch['name'],
             change_filter=gpcf,
             treeStableTimer=None,
             builderNames=["other_sources"+":"+ arch['name']]))
+    builder_names.append('gentoo_sources'+":"+ arch['name'])
     builder_names.append('other_sources'+":"+ arch['name'])
 
-gpcf = util.ChangeFilter(category='gentoo-pull', filter_fn=eclass_change)
 schedulers.append(SingleBranchScheduler(
         name="eclass_change",
         change_filter=gpcf,
