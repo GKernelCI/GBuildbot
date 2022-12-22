@@ -5,26 +5,29 @@ import yaml
 
 # Define branch to build
 branches_list = [
-    '6.2',
-    '6.1',
-    '6.0',
-    '5.15', 
-    '5.10', 
-    '5.4', 
-    '4.19',
-    '4.14', 
-    '4.9', 
+    "6.2",
+    "6.1",
+    "6.0",
+    "5.15",
+    "5.10",
+    "5.4",
+    "4.19",
+    "4.14",
+    "4.9",
 ]
+
 
 def get_arches():
     config = yaml.safe_load(open("config/config.yaml"))
     architecture_testing_list = config["architecture_testing_list"]
     return architecture_testing_list
 
+
 def get_arches_stabilization():
     config = yaml.safe_load(open("config/config_stabilization.yaml"))
     architecture_stabilization_list = config["architecture_stabilization_list"]
     return architecture_stabilization_list
+
 
 # get a list of all workers
 def get_workers():
@@ -37,6 +40,7 @@ def get_workers():
         print("ERROR: no workers list")
         return []
     return cy["workers"]
+
 
 # get a list of all workers who can work arch+toolchain
 def get_workers_for(arch, toolchain):

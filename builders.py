@@ -11,7 +11,12 @@ from config.factory.images_builder import *
 from buildbot.plugins import *
 from buildbot.plugins import reporters, util
 from buildbot.process.properties import Interpolate
-from config.settings import branches_list, get_arches, get_arches_stabilization ,get_workers_for
+from config.settings import (
+    branches_list,
+    get_arches,
+    get_arches_stabilization,
+    get_workers_for,
+)
 import os
 
 builders = []
@@ -26,25 +31,36 @@ for kernel_branch in branches_list:
             tags.append(arch["name"])
             tags.append(kernel_branch)
             builders.append(
-              util.BuilderConfig(name=kernel_branch + ':' + arch["name"] + ':' + toolchain["name"],
-                                 tags=tags,
-                                 workernames=get_workers_for(arch["name"], toolchain["name"]),
-                        factory=test_linux_patches(kernel_branch, arch["name"])))
+                util.BuilderConfig(
+                    name=kernel_branch + ":" + arch["name"] + ":" + toolchain["name"],
+                    tags=tags,
+                    workernames=get_workers_for(arch["name"], toolchain["name"]),
+                    factory=test_linux_patches(kernel_branch, arch["name"]),
+                )
+            )
 
 for arch in architecture_stabilization_list:
     builders.append(
-        util.BuilderConfig(name='gentoo_sources' + ':' + arch["name"],
-                           workernames=get_workers_for("gentoo_sources", None),
-                           factory=test_source_packages(arch["name"])))
+        util.BuilderConfig(
+            name="gentoo_sources" + ":" + arch["name"],
+            workernames=get_workers_for("gentoo_sources", None),
+            factory=test_source_packages(arch["name"]),
+        )
+    )
 
 for arch in architecture_stabilization_list:
     builders.append(
-        util.BuilderConfig(name='other_sources' + ':' + arch["name"],
-                           workernames=get_workers_for("other_sources", None),
-                           factory=test_source_packages(arch["name"])))
+        util.BuilderConfig(
+            name="other_sources" + ":" + arch["name"],
+            workernames=get_workers_for("other_sources", None),
+            factory=test_source_packages(arch["name"]),
+        )
+    )
 
 builders.append(
-    util.BuilderConfig(name='eclass_change',
-                       workernames=get_workers_for("eclass_change", None),
-                       factory=test_eclass_changes("x86_64")))
-
+    util.BuilderConfig(
+        name="eclass_change",
+        workernames=get_workers_for("eclass_change", None),
+        factory=test_eclass_changes("x86_64"),
+    )
+)
