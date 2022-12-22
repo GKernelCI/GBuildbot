@@ -26,17 +26,20 @@ def change_files_json_push(change):
 # looks for sys-kernel changes but excluding gentoo-sources
 def syskernel_change(change):
     print("Change111: " + str(change.files))
-    syskernel_package_found = False
+    excluded_package = [
+        "sys-kernel/gentoo-sources",
+        "gentoo-kernel",
+        "gentoo-kernel-bin",
+        "genkernel",
+        "vanilla-sources",
+        "git-sources",
+        "mips-sources",
+        "pf-sources",
+    ]
     for package in change.files:
         if "sys-kernel/" in package:
-            if "sys-kernel/gentoo-sources" not in package:
-                if "gentoo-kernel" not in package:
-                    if "vanilla-kernel" not in package:
-                        if "gentoo-kernel-bin" not in package:
-                            if "genkernel" not in package:
-                                syskernel_package_found = True
-    if syskernel_package_found == True:
-        return True
+            if package not in excluded_package:
+                return True
 
 
 # looks for eclass/kernel-2.eclass changes only
