@@ -7,7 +7,7 @@ from buildbot.schedulers.forcesched import ForceScheduler
 from buildbot.scheduler import Try_Userpass
 from buildbot.plugins import reporters, util
 from buildbot.process.properties import Interpolate
-from config.settings import branches_list, get_arches, get_arches_stabilization
+from config.settings import branches_list, get_arches
 import os
 
 ####### SCHEDULERS
@@ -51,7 +51,7 @@ def eclass_change(change):
 
 
 architecture_testing_list = get_arches()
-architecture_stabilization_list = get_arches_stabilization()
+#architecture_stabilization_list = get_arches_stabilization()
 
 
 def builderNames(branch):
@@ -120,25 +120,25 @@ gpcf_gentoo = util.ChangeFilter(
 )
 gpcf_others = util.ChangeFilter(category="gentoo-pull", filter_fn=syskernel_change)
 gpcf_eclass = util.ChangeFilter(category="gentoo-pull", filter_fn=eclass_change)
-for arch in architecture_stabilization_list:
-    schedulers.append(
-        SingleBranchScheduler(
-            name="gentoo_sources" + ":" + arch["name"],
-            change_filter=gpcf_gentoo,
-            treeStableTimer=None,
-            builderNames=["gentoo_sources" + ":" + arch["name"]],
-        )
-    )
-    schedulers.append(
-        SingleBranchScheduler(
-            name="other_sources" + ":" + arch["name"],
-            change_filter=gpcf_others,
-            treeStableTimer=None,
-            builderNames=["other_sources" + ":" + arch["name"]],
-        )
-    )
-    builder_names.append("gentoo_sources" + ":" + arch["name"])
-    builder_names.append("other_sources" + ":" + arch["name"])
+#for arch in architecture_stabilization_list:
+#    schedulers.append(
+#        SingleBranchScheduler(
+#            name="gentoo_sources" + ":" + arch["name"],
+#            change_filter=gpcf_gentoo,
+#            treeStableTimer=None,
+#            builderNames=["gentoo_sources" + ":" + arch["name"]],
+#        )
+#    )
+#    schedulers.append(
+#        SingleBranchScheduler(
+#            name="other_sources" + ":" + arch["name"],
+#            change_filter=gpcf_others,
+#            treeStableTimer=None,
+#            builderNames=["other_sources" + ":" + arch["name"]],
+#        )
+#    )
+#    builder_names.append("gentoo_sources" + ":" + arch["name"])
+#    builder_names.append("other_sources" + ":" + arch["name"])
 
 schedulers.append(
     SingleBranchScheduler(
