@@ -14,7 +14,6 @@ from buildbot.process.properties import Interpolate
 from config.settings import (
     branches_list,
     get_arches,
-    get_arches_stabilization,
     get_workers_for,
 )
 import os
