@@ -1,13 +1,1 @@
 architecture_stabilization_list:
- - name: amd64
-   toolchain:
-   - name: gcc
- - name: "386"
-   toolchain:
-   - name: gcc
- - name: arm
-   toolchain:
-   - name: gcc
- - name: arm64
-   toolchain:
-   - name: gcc
