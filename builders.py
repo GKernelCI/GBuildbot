@@ -21,7 +21,7 @@ import os
 
 builders = []
 architecture_testing_list = get_arches()
-architecture_stabilization_list = get_arches_stabilization()
+#architecture_stabilization_list = get_arches_stabilization()
 
 for kernel_branch in branches_list:
     for arch in architecture_testing_list:
@@ -39,23 +39,23 @@ for kernel_branch in branches_list:
                 )
             )
 
-for arch in architecture_stabilization_list:
-    builders.append(
-        util.BuilderConfig(
-            name="gentoo_sources" + ":" + arch["name"],
-            workernames=get_workers_for("gentoo_sources", None),
-            factory=test_source_packages(arch["name"]),
-        )
-    )
-
-for arch in architecture_stabilization_list:
-    builders.append(
-        util.BuilderConfig(
-            name="other_sources" + ":" + arch["name"],
-            workernames=get_workers_for("other_sources", None),
-            factory=test_source_packages(arch["name"]),
-        )
-    )
+#for arch in architecture_stabilization_list:
+#    builders.append(
+#        util.BuilderConfig(
+#            name="gentoo_sources" + ":" + arch["name"],
+#            workernames=get_workers_for("gentoo_sources", None),
+#            factory=test_source_packages(arch["name"]),
+#        )
+#    )
+#
+#for arch in architecture_stabilization_list:
+#    builders.append(
+#        util.BuilderConfig(
+#            name="other_sources" + ":" + arch["name"],
+#            workernames=get_workers_for("other_sources", None),
+#            factory=test_source_packages(arch["name"]),
+#        )
+#    )
 
 builders.append(
     util.BuilderConfig(

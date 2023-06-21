@@ -5,6 +5,7 @@ import yaml
 
 # Define branch to build
 branches_list = [
+    "6.3",
     "6.2",
     "6.1",
     "6.0",
@@ -23,10 +24,10 @@ def get_arches():
     return architecture_testing_list
 
 
-def get_arches_stabilization():
-    config = yaml.safe_load(open("config/config_stabilization.yaml"))
-    architecture_stabilization_list = config["architecture_stabilization_list"]
-    return architecture_stabilization_list
+#def get_arches_stabilization():
+#    config = yaml.safe_load(open("config/config_stabilization.yaml"))
+#    architecture_stabilization_list = config["architecture_stabilization_list"]
+#    return architecture_stabilization_list
 
 
 # get a list of all workers
