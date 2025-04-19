@@ -5,20 +5,15 @@ import yaml
 
 # Define branch to build
 branches_list = [
-    "6.9",
-    "6.8",
-    "6.7",
+    "6.14",
+    "6.13",
+    "6.12",
     "6.6",
-    "6.5",
     "6.1",
-    "6.0",
     "5.15",
     "5.10",
     "5.4",
-    "4.19",
-    "4.14",
 ]
-
 
 def get_arches():
     config = yaml.safe_load(open("config/config.yaml"))
