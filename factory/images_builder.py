@@ -6,7 +6,6 @@ from buildbot.plugins import reporters, util
 from buildbot.process.properties import Interpolate
 from buildbot.steps.shell import ShellCommand
 from buildbot.process import results
-from buildbot.process.buildstep import LogLineObserver
 import re
 import pprint
 import os
